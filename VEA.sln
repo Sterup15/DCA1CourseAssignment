@@ -1,6 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{BA16856F-E0F3-421F-87CC-05446202B347}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation\Assignment04.md = Documentation\Assignment04.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0F9FBD7F-2ABC-43EF-B7A4-DC86F74CDC2B}"
 EndProject
@@ -9,6 +12,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{FC569E12-04D2-498B-9DE4-F4A24F95BD79}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VEA.Core.Tools.OperationResult", "src\Core\Tools\VEA.Core.Tools.OperationResult\VEA.Core.Tools.OperationResult.csproj", "{0FA62EAA-024F-4447-9F9E-0D15CDBE0014}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{AE9E484B-25AE-4F93-8E84-5D30EC598FD3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "Tests\UnitTests\UnitTests.csproj", "{A2D4FD64-B8FF-408B-9F1F-5C66810FB3BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VEA.Core.Domain", "src\Core\VEA.Core.Domain\VEA.Core.Domain.csproj", "{CF145579-9A5F-424D-9702-E663F634B4AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,11 +28,21 @@ Global
 		{F32E8B1A-CBCF-4179-B8A4-6D1500446F43} = {0F9FBD7F-2ABC-43EF-B7A4-DC86F74CDC2B}
 		{FC569E12-04D2-498B-9DE4-F4A24F95BD79} = {F32E8B1A-CBCF-4179-B8A4-6D1500446F43}
 		{0FA62EAA-024F-4447-9F9E-0D15CDBE0014} = {FC569E12-04D2-498B-9DE4-F4A24F95BD79}
+		{A2D4FD64-B8FF-408B-9F1F-5C66810FB3BD} = {AE9E484B-25AE-4F93-8E84-5D30EC598FD3}
+		{CF145579-9A5F-424D-9702-E663F634B4AC} = {F32E8B1A-CBCF-4179-B8A4-6D1500446F43}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0FA62EAA-024F-4447-9F9E-0D15CDBE0014}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0FA62EAA-024F-4447-9F9E-0D15CDBE0014}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FA62EAA-024F-4447-9F9E-0D15CDBE0014}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FA62EAA-024F-4447-9F9E-0D15CDBE0014}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2D4FD64-B8FF-408B-9F1F-5C66810FB3BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2D4FD64-B8FF-408B-9F1F-5C66810FB3BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2D4FD64-B8FF-408B-9F1F-5C66810FB3BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2D4FD64-B8FF-408B-9F1F-5C66810FB3BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF145579-9A5F-424D-9702-E663F634B4AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF145579-9A5F-424D-9702-E663F634B4AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF145579-9A5F-424D-9702-E663F634B4AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF145579-9A5F-424D-9702-E663F634B4AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
