@@ -1,23 +1,18 @@
 ﻿namespace VEA.Core.Tools.OperationResult;
 
 using VEA.Core.Tools.OperationResult.Errors;
-public class Result
+public abstract record Result<T>
 {
-    protected Result(bool isSuccess, IReadOnlyList<Error> errors)
-    {
-        IsSuccess = isSuccess;
-        Errors = errors;
-    }
+    private Result() { }
 
-    public bool IsSuccess { get; }
-    public bool IsFailure => !IsSuccess;
-    public IReadOnlyList<Error> Errors { get; }
+    public sealed record Success(T Value) : Result<T>;
+    public sealed record Failure(IReadOnlyList<Error> Errors) : Result<T>;
 
-    public static Result Success() => new(true, Array.Empty<Error>());
-
-    public static Result Failure(params Error[] errors) =>
-        new(false, errors.ToList());
-
-    public static Result Failure(IEnumerable<Error> errors) =>
-        new(false, errors.ToList());
+    public static implicit operator Result<T>(T value) => new Success(value);
+    public static implicit operator Result<T>(Error error) => new Failure(new[] { error });
+    public static implicit operator Result<T>(Error[] errors) => new Failure(errors);
 }
+
+
+
+
