@@ -20,7 +20,11 @@
 
     <ItemGroup>
       <Folder Include="Common\" />
-      <Folder Include="Features\VeaEvent\MakePublic\" />
+      <Folder Include="Features\EventAggregate\MakePublic\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Core\VEA.Core.Domain\VEA.Core.Domain.csproj" />
     </ItemGroup>
 
 </Project>
