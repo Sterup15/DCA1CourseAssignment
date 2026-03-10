@@ -159,7 +159,7 @@ public sealed class VeaEvent : AggregateRoot<EventId>
             return Result<VeaEvent>.Fail(EventErrors.VeaEvent.CancelledEventCannotBeModified);
         }
 
-        if (Status.Value == EventStatusValue.Active && guestCapacity.Value <= GuestCapacity.Value)
+        if (Status.Value == EventStatusValue.Active && guestCapacity.Value < GuestCapacity.Value)
         {
             return Result<VeaEvent>.Fail(EventErrors.VeaEvent.ActiveEventGuestCapacityCanOnlyIncrease);
         }
@@ -220,6 +220,18 @@ public sealed class VeaEvent : AggregateRoot<EventId>
         }
 
         Status = EventStatus.Active;
+
+        return Result<VeaEvent>.Ok(this);
+    }
+    
+    public Result<VeaEvent> Cancel()
+    {
+        if (Status.Value == EventStatusValue.Cancelled)
+        {
+            return Result<VeaEvent>.Ok(this);
+        }
+
+        Status = EventStatus.Cancelled;
 
         return Result<VeaEvent>.Ok(this);
     }

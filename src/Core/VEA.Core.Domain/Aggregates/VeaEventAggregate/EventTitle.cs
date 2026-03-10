@@ -22,7 +22,7 @@ public sealed record EventTitle
     {
         var normalizedValue = value?.Trim();
 
-        if (normalizedValue == null)
+        if (string.IsNullOrWhiteSpace(normalizedValue))
         {
             return Result<EventTitle>.Fail(EventErrors.EventTitle.Empty);
         }

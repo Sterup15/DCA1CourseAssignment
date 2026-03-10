@@ -20,7 +20,6 @@
 
     <ItemGroup>
       <Folder Include="Common\" />
-      <Folder Include="Features\EventAggregate\MakePublic\" />
     </ItemGroup>
 
     <ItemGroup>

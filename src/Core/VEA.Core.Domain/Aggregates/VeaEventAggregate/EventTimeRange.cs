@@ -62,11 +62,11 @@ public sealed record EventTimeRange
 
     private static readonly IReadOnlyList<ValidationRule> Rules =
     [
+        CheckDurationIsAtLeast1Hour,
         CheckEndIsAfterStart,
         CheckStartIsNotBefore08,
         CheckEndIsWithinAllowedWindow,
-        CheckDurationIsAtMost10Hours,
-        CheckDurationIsAtLeast1Hour
+        CheckDurationIsAtMost10Hours
     ];
     
     private static Error? CheckEndIsAfterStart(DateTime start, DateTime end)
@@ -146,7 +146,7 @@ public sealed record EventTimeRange
     
     private static Error? CheckDurationIsAtLeast1Hour(DateTime start, DateTime end)
     {
-        if (end <= start)
+        if (end < start)
         {
             return null;
         }
