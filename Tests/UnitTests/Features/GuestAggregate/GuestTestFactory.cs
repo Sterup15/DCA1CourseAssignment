@@ -1,6 +1,8 @@
 ﻿namespace UnitTests.Features.GuestAggregate;
 
+using UnitTests.Fakes;
 using VEA.Core.Domain.Aggregates.GuestAggregate;
+using VEA.Core.Domain.Aggregates.GuestAggregate.Contracts;
 using VEA.Core.Tools.OperationResult;
 using Xunit;
 
@@ -12,9 +14,9 @@ public static class GuestTestFactory
         return Assert.IsType<Result<Name>.Success>(result).Value;
     }
 
-    public static ViaMail CreateViaMail(string value)
+    public static ViaMail CreateViaMail(string value, IEmailInUseChecker? checker = null)
     {
-        var result = ViaMail.Create(value);
+        var result = ViaMail.Create(value, checker ?? new FakeEmailInUseChecker());
         return Assert.IsType<Result<ViaMail>.Success>(result).Value;
     }
 

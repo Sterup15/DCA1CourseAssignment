@@ -1,4 +1,5 @@
-﻿using VEA.Core.Domain.Aggregates.GuestAggregate;
+﻿using UnitTests.Fakes;
+using VEA.Core.Domain.Aggregates.GuestAggregate;
 using VEA.Core.Tools.OperationResult;
 
 namespace UnitTests.Features.GuestAggregate.RegisterGuest;
@@ -69,7 +70,7 @@ public class RegisterGuestAggregateTests
     public void CreateViaMail_WhenEmailDomainIsIncorrect_ReturnsFailure(string rawEmail)
     {
         // Act
-        var result = ViaMail.Create(rawEmail);
+        var result = ViaMail.Create(rawEmail, new FakeEmailInUseChecker());
 
         // Assert
         var failure = Assert.IsType<Result<ViaMail>.Failure>(result);
@@ -86,13 +87,27 @@ public class RegisterGuestAggregateTests
     public void CreateViaMail_WhenEmailFormatIsIncorrect_ReturnsFailure(string rawEmail)
     {
         // Act
-        var result = ViaMail.Create(rawEmail);
+        var result = ViaMail.Create(rawEmail, new FakeEmailInUseChecker());
 
         // Assert
         var failure = Assert.IsType<Result<ViaMail>.Failure>(result);
         Assert.True(
             failure.Errors.Contains(GuestErrors.ViaMail.InvalidFormat) ||
             failure.Errors.Contains(GuestErrors.ViaMail.InvalidDomain));
+    }
+
+    [Theory]
+    [InlineData("abc@via.dk")]
+    [InlineData("abcd@via.dk")]
+    [InlineData("123456@via.dk")]
+    public void CreateViaMail_WhenEmailIsAlreadyInUse_ReturnsFailure(string rawEmail)
+    {
+        // Act
+        var result = ViaMail.Create(rawEmail, new FakeEmailInUseChecker(isInUse: true));
+
+        // Assert
+        var failure = Assert.IsType<Result<ViaMail>.Failure>(result);
+        Assert.Contains(failure.Errors, e => e == GuestErrors.ViaMail.EmailInUse);
     }
 
     [Theory]

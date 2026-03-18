@@ -25,6 +25,9 @@ public static class GuestErrors
         public static readonly Error InvalidFormat =
             new(Code + ".invalidFormat",
                 "ViaMail must be <text1>@via.dk where text1 is 3-4 letters or 6 digits.");
+
+        public static readonly Error EmailInUse =
+            new(Code + ".emailInUse", "An account with this email already exists.");
     }
     
     public static class Name
