@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using VEA.Core.Domain.Aggregates.GuestAggregate.Contracts;
 using VEA.Core.Tools.OperationResult;
 using VEA.Core.Tools.OperationResult.Errors;
 
@@ -16,7 +15,7 @@ public sealed record ViaMail
         Value = value;
     }
 
-    public static Result<ViaMail> Create(string? value, IEmailInUseChecker emailInUseChecker)
+    public static Result<ViaMail> Create(string? value, bool isEmailInUse = false)
     {
         var normalizedValue = value?.Trim().ToLowerInvariant() ?? string.Empty;
 
@@ -32,8 +31,7 @@ public sealed record ViaMail
             return Result<ViaMail>.Fail(errors.ToArray());
         }
 
-        // Example of contract in use, validated AFTER the "normal" rules, as these contract checks will most likely be more resource heavy, as they have external dependencies.
-        if (emailInUseChecker.IsEmailInUse(normalizedValue))
+        if (isEmailInUse)
         {
             return Result<ViaMail>.Fail(GuestErrors.ViaMail.EmailInUse);
         }

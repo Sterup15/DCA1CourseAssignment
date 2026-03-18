@@ -1,5 +1,4 @@
-﻿using UnitTests.Fakes;
-using VEA.Core.Domain.Aggregates.GuestAggregate;
+﻿using VEA.Core.Domain.Aggregates.GuestAggregate;
 using VEA.Core.Tools.OperationResult;
 
 namespace UnitTests.Features.GuestAggregate.RegisterGuest;
@@ -70,7 +69,7 @@ public class RegisterGuestAggregateTests
     public void CreateViaMail_WhenEmailDomainIsIncorrect_ReturnsFailure(string rawEmail)
     {
         // Act
-        var result = ViaMail.Create(rawEmail, new FakeEmailInUseChecker());
+        var result = ViaMail.Create(rawEmail);
 
         // Assert
         var failure = Assert.IsType<Result<ViaMail>.Failure>(result);
@@ -87,7 +86,7 @@ public class RegisterGuestAggregateTests
     public void CreateViaMail_WhenEmailFormatIsIncorrect_ReturnsFailure(string rawEmail)
     {
         // Act
-        var result = ViaMail.Create(rawEmail, new FakeEmailInUseChecker());
+        var result = ViaMail.Create(rawEmail);
 
         // Assert
         var failure = Assert.IsType<Result<ViaMail>.Failure>(result);
@@ -103,7 +102,7 @@ public class RegisterGuestAggregateTests
     public void CreateViaMail_WhenEmailIsAlreadyInUse_ReturnsFailure(string rawEmail)
     {
         // Act
-        var result = ViaMail.Create(rawEmail, new FakeEmailInUseChecker(isInUse: true));
+        var result = ViaMail.Create(rawEmail, isEmailInUse: true);
 
         // Assert
         var failure = Assert.IsType<Result<ViaMail>.Failure>(result);
