@@ -10,6 +10,9 @@ public static class GuestErrors
 
         public static readonly ResultError Empty =
             new(GuestIdCode + ".empty", "GuestId cannot be empty.");
+
+        public static readonly ResultError InvalidFormat =
+            new(GuestIdCode + ".invalidFormat", "GuestId must be a valid GUID.");
     }
     
     public static class ViaMail

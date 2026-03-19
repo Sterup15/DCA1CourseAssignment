@@ -12,5 +12,10 @@ public readonly record struct GuestId(Guid Value)
             ? GuestErrors.GuestId.Empty
             : new Success<GuestId>(new GuestId(value));
 
+    public static Result<GuestId> From(string value)
+        => Guid.TryParse(value, out var guid)
+            ? From(guid)
+            : GuestErrors.GuestId.InvalidFormat;
+
     public override string ToString() => Value.ToString();
 }

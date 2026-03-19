@@ -25,6 +25,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Core\VEA.Core.Domain\VEA.Core.Domain.csproj" />
+      <ProjectReference Include="..\..\src\Core\VEA.Core.Application\VEA.Core.Application.csproj" />
     </ItemGroup>
 
 </Project>
