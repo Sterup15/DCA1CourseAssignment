@@ -11,5 +11,10 @@ public readonly record struct EventId(Guid Value)
             ? EventErrors.EventId.Empty
             : Result<EventId>.Ok(new EventId(value));
 
+    public static Result<EventId> From(string value)
+        => Guid.TryParse(value, out var guid)
+            ? From(guid)
+            : EventErrors.EventId.InvalidFormat;
+
     public override string ToString() => Value.ToString();
 }

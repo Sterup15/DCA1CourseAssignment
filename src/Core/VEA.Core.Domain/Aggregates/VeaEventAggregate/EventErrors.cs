@@ -40,6 +40,9 @@ public static class EventErrors
 
         public static readonly Error TimeRangeMustBeSet =
             new(EventCode + ".timeRangeMustBeSet", "Event time range must be set before the event can be readied.");
+        
+        public static readonly Error EventNotFound =
+            new(EventCode + ".eventNotFound", "Event object not found.");
     }
     public static class EventId
     {
@@ -47,6 +50,9 @@ public static class EventErrors
         
         public static readonly Error Empty =
             new(EventIdCode + ".empty", "EventId cannot be empty.");
+
+        public static readonly Error InvalidFormat =
+            new(EventIdCode + ".invalidFormat", "EventId must be a valid GUID.");
     }
     
     public static class EventTitle

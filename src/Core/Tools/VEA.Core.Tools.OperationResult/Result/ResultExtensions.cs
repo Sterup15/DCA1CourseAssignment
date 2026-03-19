@@ -55,4 +55,54 @@ public static class ResultExtensions
         action(success.Value);
         return original;
     }
+
+    // CombineInto: collect errors from all results, or map values into TResult
+    public static Result<TResult> CombineInto<T1, T2, TResult>(
+        Result<T1> r1,
+        Result<T2> r2,
+        Func<T1, T2, TResult> factory)
+    {
+        var errors = new List<Error>();
+
+        if (r1 is Result<T1>.Failure f1) errors.AddRange(f1.Errors);
+        if (r2 is Result<T2>.Failure f2) errors.AddRange(f2.Errors);
+
+        if (errors.Count > 0)
+            return Result<TResult>.Fail(errors.ToArray());
+
+        return Result<TResult>.Ok(factory(
+            ((Result<T1>.Success)r1).Value,
+            ((Result<T2>.Success)r2).Value));
+    }
+
+    public static Result<TResult> CombineInto<T1, T2, T3, TResult>(
+        Result<T1> r1,
+        Result<T2> r2,
+        Result<T3> r3,
+        Func<T1, T2, T3, TResult> factory)
+    {
+        var errors = new List<Error>();
+
+        if (r1 is Result<T1>.Failure f1) errors.AddRange(f1.Errors);
+        if (r2 is Result<T2>.Failure f2) errors.AddRange(f2.Errors);
+        if (r3 is Result<T3>.Failure f3) errors.AddRange(f3.Errors);
+
+        if (errors.Count > 0)
+            return Result<TResult>.Fail(errors.ToArray());
+
+        return Result<TResult>.Ok(factory(
+            ((Result<T1>.Success)r1).Value,
+            ((Result<T2>.Success)r2).Value,
+            ((Result<T3>.Success)r3).Value));
+    }
+
+    // WithPayloadIfSuccess: replace the success value, propagate errors on failure
+    public static Result<TOut> WithPayloadIfSuccess<T, TOut>(
+        this Result<T> result,
+        TOut payload)
+        => result switch
+        {
+            Result<T>.Success => Result<TOut>.Ok(payload),
+            Result<T>.Failure f => Result<TOut>.Fail(f.Errors.ToArray()),
+        };
 }
