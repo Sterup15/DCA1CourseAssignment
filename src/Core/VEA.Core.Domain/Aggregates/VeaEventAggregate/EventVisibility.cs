@@ -1,4 +1,5 @@
 ﻿using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace VEA.Core.Domain.Aggregates.VeaEventAggregate;
 
@@ -19,7 +20,7 @@ public sealed record EventVisibility
     public static Result<EventVisibility> Create(EventVisibilityValue value)
     {
         return Enum.IsDefined(value)
-            ? Result<EventVisibility>.Ok(new EventVisibility(value))
+            ? new Success<EventVisibility>(new EventVisibility(value))
             : EventErrors.EventVisibility.Invalid;
     }
 

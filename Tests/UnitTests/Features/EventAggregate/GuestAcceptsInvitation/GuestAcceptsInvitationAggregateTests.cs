@@ -2,6 +2,7 @@
 using VEA.Core.Domain.Aggregates.VeaEventAggregate;
 using VEA.Core.Domain.Aggregates.VeaEventAggregate.ParticipationEntity;
 using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace UnitTests.Features.EventAggregate.GuestAcceptsInvitation;
 
@@ -15,7 +16,7 @@ public class GuestAcceptsInvitationAggregateTests
         var guest = GuestTestFactory.CreateGuest();
 
         var inviteResult = veaEvent.InviteGuest(guest.Id, ParticipationSource.Private);
-        Assert.IsType<Result<VeaEvent>.Success>(inviteResult);
+        Assert.IsType<Success<VeaEvent>>(inviteResult);
 
         var now = VeaEventTestFactory.DefaultNow;
 
@@ -23,7 +24,7 @@ public class GuestAcceptsInvitationAggregateTests
         var result = veaEvent.AcceptInvitation(guest.Id, now);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         var participation = Assert.Single(success.Value.Participations);
 
         Assert.Equal(guest.Id, participation.GuestId);
@@ -43,7 +44,7 @@ public class GuestAcceptsInvitationAggregateTests
         var result = veaEvent.AcceptInvitation(guest.Id, now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.Participation.ParticipationNotFound);
@@ -67,11 +68,11 @@ public class GuestAcceptsInvitationAggregateTests
         var fifthGuest = GuestTestFactory.CreateGuest(email: "lmno@via.dk");
         var invitedGuest = GuestTestFactory.CreateGuest(email: "pqrs@via.dk");
 
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(firstGuest.Id, now));
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(secondGuest.Id, now));
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(thirdGuest.Id, now));
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(fourthGuest.Id, now));
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(fifthGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(firstGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(secondGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(thirdGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(fourthGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(fifthGuest.Id, now));
 
         var inviteResult = veaEvent.InviteGuest(invitedGuest.Id, ParticipationSource.Private);
 
@@ -82,7 +83,7 @@ public class GuestAcceptsInvitationAggregateTests
         veaEvent.SetVisibilityToPublic();
 
         invitedGuest = GuestTestFactory.CreateGuest(email: "pqrs@via.dk");
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.InviteGuest(invitedGuest.Id, ParticipationSource.Private));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.InviteGuest(invitedGuest.Id, ParticipationSource.Private));
 
         firstGuest = GuestTestFactory.CreateGuest(email: "abc@via.dk");
         secondGuest = GuestTestFactory.CreateGuest(email: "abcd@via.dk");
@@ -90,17 +91,17 @@ public class GuestAcceptsInvitationAggregateTests
         fourthGuest = GuestTestFactory.CreateGuest(email: "wxyz@via.dk");
         fifthGuest = GuestTestFactory.CreateGuest(email: "lmno@via.dk");
 
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(firstGuest.Id, now));
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(secondGuest.Id, now));
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(thirdGuest.Id, now));
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(fourthGuest.Id, now));
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(fifthGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(firstGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(secondGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(thirdGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(fourthGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(fifthGuest.Id, now));
 
         // Act
         var result = veaEvent.AcceptInvitation(invitedGuest.Id, now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.Participation.EventCapacityReached);
@@ -118,10 +119,10 @@ public class GuestAcceptsInvitationAggregateTests
         var guest = GuestTestFactory.CreateGuest();
 
         var inviteResult = veaEvent.InviteGuest(guest.Id, ParticipationSource.Private);
-        Assert.IsType<Result<VeaEvent>.Success>(inviteResult);
+        Assert.IsType<Success<VeaEvent>>(inviteResult);
 
         var cancelResult = veaEvent.Cancel();
-        Assert.IsType<Result<VeaEvent>.Success>(cancelResult);
+        Assert.IsType<Success<VeaEvent>>(cancelResult);
 
         var now = VeaEventTestFactory.DefaultNow;
 
@@ -129,7 +130,7 @@ public class GuestAcceptsInvitationAggregateTests
         var result = veaEvent.AcceptInvitation(guest.Id, now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.Participation.EventMustBeActiveToAcceptInvitation);
@@ -147,7 +148,7 @@ public class GuestAcceptsInvitationAggregateTests
         var guest = GuestTestFactory.CreateGuest();
 
         var inviteResult = veaEvent.InviteGuest(guest.Id, ParticipationSource.Private);
-        Assert.IsType<Result<VeaEvent>.Success>(inviteResult);
+        Assert.IsType<Success<VeaEvent>>(inviteResult);
 
         var now = VeaEventTestFactory.DefaultNow;
 
@@ -155,7 +156,7 @@ public class GuestAcceptsInvitationAggregateTests
         var result = veaEvent.AcceptInvitation(guest.Id, now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.Participation.EventMustBeActiveToAcceptInvitation);
@@ -173,7 +174,7 @@ public class GuestAcceptsInvitationAggregateTests
         var guest = GuestTestFactory.CreateGuest();
 
         var inviteResult = veaEvent.InviteGuest(guest.Id, ParticipationSource.Private);
-        Assert.IsType<Result<VeaEvent>.Success>(inviteResult);
+        Assert.IsType<Success<VeaEvent>>(inviteResult);
 
         var afterStart = new DateTime(2030, 08, 25, 13, 30, 00, DateTimeKind.Utc);
 
@@ -181,7 +182,7 @@ public class GuestAcceptsInvitationAggregateTests
         var result = veaEvent.AcceptInvitation(guest.Id, afterStart);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.Participation.OnlyFutureEventsCanBeParticipated);

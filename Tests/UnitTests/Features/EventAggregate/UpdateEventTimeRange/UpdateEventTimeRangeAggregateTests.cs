@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Domain.Aggregates.VeaEventAggregate;
 using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace UnitTests.Features.EventAggregate.UpdateEventTimeRange;
 
@@ -24,7 +25,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = veaEvent.UpdateTimeRange(timeRange, now);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(timeRange, success.Value.TimeRange);
         Assert.Equal(EventStatus.Draft, success.Value.Status);
     }
@@ -46,7 +47,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = veaEvent.UpdateTimeRange(timeRange, now);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(timeRange, success.Value.TimeRange);
         Assert.Equal(EventStatus.Draft, success.Value.Status);
     }
@@ -67,7 +68,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = veaEvent.UpdateTimeRange(timeRange, now);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(timeRange, success.Value.TimeRange);
         Assert.Equal(EventStatus.Draft, success.Value.Status);
     }
@@ -88,7 +89,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = veaEvent.UpdateTimeRange(timeRange, now);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(timeRange, success.Value.TimeRange);
     }
 
@@ -109,7 +110,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = veaEvent.UpdateTimeRange(timeRange, now);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(timeRange, success.Value.TimeRange);
     }
 
@@ -126,7 +127,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = EventTimeRange.Create(VeaEventTestFactory.Parse(startRaw), VeaEventTestFactory.Parse(endRaw));
 
         // Assert
-        var failure = Assert.IsType<Result<EventTimeRange>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventTimeRange>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.EventTimeRange.EndMustBeAfterStart);
     }
 
@@ -144,7 +145,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = EventTimeRange.Create(VeaEventTestFactory.Parse(startRaw), VeaEventTestFactory.Parse(endRaw));
 
         // Assert
-        var failure = Assert.IsType<Result<EventTimeRange>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventTimeRange>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.EventTimeRange.EndMustBeAfterStart);
     }
 
@@ -161,7 +162,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = EventTimeRange.Create(VeaEventTestFactory.Parse(startRaw), VeaEventTestFactory.Parse(endRaw));
 
         // Assert
-        var failure = Assert.IsType<Result<EventTimeRange>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventTimeRange>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.EventTimeRange.TooShort);
     }
 
@@ -177,7 +178,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = EventTimeRange.Create(VeaEventTestFactory.Parse(startRaw), VeaEventTestFactory.Parse(endRaw));
 
         // Assert
-        var failure = Assert.IsType<Result<EventTimeRange>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventTimeRange>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.EventTimeRange.TooShort);
     }
 
@@ -195,7 +196,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = EventTimeRange.Create(VeaEventTestFactory.Parse(startRaw), VeaEventTestFactory.Parse(endRaw));
 
         // Assert
-        var failure = Assert.IsType<Result<EventTimeRange>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventTimeRange>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.EventTimeRange.StartTooEarly);
     }
 
@@ -212,7 +213,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = EventTimeRange.Create(VeaEventTestFactory.Parse(startRaw), VeaEventTestFactory.Parse(endRaw));
 
         // Assert
-        var failure = Assert.IsType<Result<EventTimeRange>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventTimeRange>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.EventTimeRange.EndOutsideAllowedHours);
     }
 
@@ -230,7 +231,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = veaEvent.UpdateTimeRange(timeRange, now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.VeaEvent.ActiveEventCannotBeModified);
         Assert.Equal(EventStatus.Active, veaEvent.Status);
     }
@@ -241,7 +242,7 @@ public class UpdateEventTimeRangeAggregateTests
         // Arrange
         var veaEvent = VeaEventTestFactory.CreateEvent();
         var cancelResult = veaEvent.Cancel();
-        Assert.IsType<Result<VeaEvent>.Success>(cancelResult);
+        Assert.IsType<Success<VeaEvent>>(cancelResult);
 
         var now = new DateTime(2030, 08, 24, 12, 00, 00, DateTimeKind.Utc);
         var timeRange = VeaEventTestFactory.CreateTimeRange(
@@ -252,7 +253,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = veaEvent.UpdateTimeRange(timeRange, now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.VeaEvent.CancelledEventCannotBeModified);
         Assert.Equal(EventStatus.Cancelled, veaEvent.Status);
     }
@@ -270,7 +271,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = EventTimeRange.Create(VeaEventTestFactory.Parse(startRaw), VeaEventTestFactory.Parse(endRaw));
 
         // Assert
-        var failure = Assert.IsType<Result<EventTimeRange>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventTimeRange>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.EventTimeRange.TooLong);
     }
 
@@ -288,7 +289,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = veaEvent.UpdateTimeRange(timeRange, now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.VeaEvent.EventTimeRangeMustBeInFuture);
     }
 
@@ -304,7 +305,7 @@ public class UpdateEventTimeRangeAggregateTests
         var result = EventTimeRange.Create(VeaEventTestFactory.Parse(startRaw), VeaEventTestFactory.Parse(endRaw));
 
         // Assert
-        var failure = Assert.IsType<Result<EventTimeRange>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventTimeRange>>(result);
         Assert.True(
             failure.Errors.Contains(EventErrors.EventTimeRange.StartTooEarly) ||
             failure.Errors.Contains(EventErrors.EventTimeRange.EndOutsideAllowedHours) ||

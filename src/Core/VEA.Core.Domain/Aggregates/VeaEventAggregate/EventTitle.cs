@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Tools.OperationResult;
 using VEA.Core.Tools.OperationResult.Errors;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace VEA.Core.Domain.Aggregates.VeaEventAggregate;
 
@@ -21,25 +22,17 @@ public sealed record EventTitle
     public static Result<EventTitle> Create(string? value)
     {
         var normalizedValue = value?.Trim();
-
-        if (string.IsNullOrWhiteSpace(normalizedValue))
-        {
-            return Result<EventTitle>.Fail(EventErrors.EventTitle.Empty);
-        }
-        
-        var errors = Validate(normalizedValue);
-
-        if (errors.Count > 0)
-        {
-            return Result<EventTitle>.Fail(errors.ToArray());
-        }
-
-        return Result<EventTitle>.Ok(new EventTitle(normalizedValue!));
+        return new Success<string>(normalizedValue ?? string.Empty)
+            .Ensure(v => !string.IsNullOrWhiteSpace(v), EventErrors.EventTitle.Empty)
+            .Bind(v => Validate(v) is { Count: > 0 } errors
+                ? (Result<string>)new Failure<string>(errors)
+                : new Success<string>(v))
+            .Map(v => new EventTitle(v));
     }
 
-    private static IReadOnlyList<Error> Validate(string? value)
+    private static IReadOnlyList<ResultError> Validate(string? value)
     {
-        var errors = new List<Error>();
+        var errors = new List<ResultError>();
 
         foreach (var rule in Rules)
         {
@@ -54,7 +47,7 @@ public sealed record EventTitle
         return errors;
     }
 
-    private delegate Error? ValidationRule(string? value);
+    private delegate ResultError? ValidationRule(string? value);
 
     private static readonly IReadOnlyList<ValidationRule> Rules =
     [
@@ -62,7 +55,7 @@ public sealed record EventTitle
         CheckTooLong
     ];
 
-    private static Error? CheckTooShort(string? value)
+    private static ResultError? CheckTooShort(string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -74,7 +67,7 @@ public sealed record EventTitle
             : null;
     }
 
-    private static Error? CheckTooLong(string? value)
+    private static ResultError? CheckTooLong(string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {

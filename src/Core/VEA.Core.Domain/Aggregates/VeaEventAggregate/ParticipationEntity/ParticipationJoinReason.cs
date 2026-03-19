@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Tools.OperationResult;
 using VEA.Core.Tools.OperationResult.Errors;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace VEA.Core.Domain.Aggregates.VeaEventAggregate.ParticipationEntity;
 
@@ -24,15 +25,15 @@ public sealed record ParticipationJoinReason
 
         if (errors.Count > 0)
         {
-            return Result<ParticipationJoinReason>.Fail(errors.ToArray());
+            return new Failure<ParticipationJoinReason>(errors);
         }
 
-        return Result<ParticipationJoinReason>.Ok(new ParticipationJoinReason(normalizedValue));
+        return new Success<ParticipationJoinReason>(new ParticipationJoinReason(normalizedValue));
     }
 
-    private static IReadOnlyList<Error> Validate(string value)
+    private static IReadOnlyList<ResultError> Validate(string value)
     {
-        var errors = new List<Error>();
+        var errors = new List<ResultError>();
 
         foreach (var rule in Rules)
         {
@@ -47,14 +48,14 @@ public sealed record ParticipationJoinReason
         return errors;
     }
 
-    private delegate Error? ValidationRule(string value);
+    private delegate ResultError? ValidationRule(string value);
 
     private static readonly IReadOnlyList<ValidationRule> Rules =
     [
         CheckTooLong
     ];
 
-    private static Error? CheckTooLong(string value)
+    private static ResultError? CheckTooLong(string value)
     {
         return value.Length > MaxLength
             ? ParticipationErrors.ParticipationJoinReason.TooLong

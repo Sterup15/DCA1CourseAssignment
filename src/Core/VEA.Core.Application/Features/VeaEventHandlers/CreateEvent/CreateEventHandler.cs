@@ -3,6 +3,7 @@ using VEA.Core.Application.AppEntry.Commands.VeaEventCommands;
 using VEA.Core.Domain.Aggregates.VeaEventAggregate;
 using VEA.Core.Domain.Common;
 using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace VEA.Core.Application.Features.VeaEventHandlers.CreateEvent;
 
@@ -21,16 +22,16 @@ internal class CreateEventHandler : ICommandHandler<CreateEventCommand, EventId>
     {
         var result = VeaEvent.Create();
 
-        if (result.IsFailure)
+        if (result is Failure<VeaEvent> failure)
         {
-            return Result<EventId>.Fail(result.GetErrors().ToArray());
+            return new Failure<EventId>(failure.Errors);
         }
 
-        var veaEvent = result.GetValue();
+        var veaEvent = ((Success<VeaEvent>)result).Value;
 
         await _repository.AddAsync(veaEvent);
         await _unitOfWork.SaveChangesAsync();
 
-        return Result<EventId>.Ok(veaEvent.Id);
+        return new Success<EventId>(veaEvent.Id);
     }
 }

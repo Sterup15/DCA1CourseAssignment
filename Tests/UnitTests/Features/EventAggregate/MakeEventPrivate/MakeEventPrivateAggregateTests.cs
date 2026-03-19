@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Domain.Aggregates.VeaEventAggregate;
 using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace UnitTests.Features.EventAggregate.MakeEventPrivate;
 
@@ -21,7 +22,7 @@ public class MakeEventPrivateAggregateTests
         var result = veaEvent.SetVisibilityToPrivate();
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(EventVisibility.Private, success.Value.Visibility);
         Assert.Equal(originalStatus, success.Value.Status);
     }
@@ -35,7 +36,7 @@ public class MakeEventPrivateAggregateTests
         // Arrange
         var veaEvent = VeaEventTestFactory.CreateEventWithStatus(initialStatus);
         var makePublicResult = veaEvent.SetVisibilityToPublic();
-        Assert.IsType<Result<VeaEvent>.Success>(makePublicResult);
+        Assert.IsType<Success<VeaEvent>>(makePublicResult);
         Assert.Equal(EventVisibility.Public, veaEvent.Visibility);
 
         var originalStatus = veaEvent.Status;
@@ -44,7 +45,7 @@ public class MakeEventPrivateAggregateTests
         var result = veaEvent.SetVisibilityToPrivate();
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(EventVisibility.Private, success.Value.Visibility);
         Assert.Equal(originalStatus, success.Value.Status);
     }
@@ -59,7 +60,7 @@ public class MakeEventPrivateAggregateTests
         var result = veaEvent.SetVisibilityToPrivate();
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.VeaEvent.ActiveEventCannotBeMadePrivate);
         Assert.Equal(EventStatus.Active, veaEvent.Status);
     }
@@ -70,13 +71,13 @@ public class MakeEventPrivateAggregateTests
         // Arrange
         var veaEvent = VeaEventTestFactory.CreateEvent();
         var cancelResult = veaEvent.Cancel();
-        Assert.IsType<Result<VeaEvent>.Success>(cancelResult);
+        Assert.IsType<Success<VeaEvent>>(cancelResult);
 
         // Act
         var result = veaEvent.SetVisibilityToPrivate();
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.VeaEvent.CancelledEventCannotBeModified);
         Assert.Equal(EventStatus.Cancelled, veaEvent.Status);
     }

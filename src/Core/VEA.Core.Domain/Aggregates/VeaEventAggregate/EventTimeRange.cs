@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Tools.OperationResult;
 using VEA.Core.Tools.OperationResult.Errors;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace VEA.Core.Domain.Aggregates.VeaEventAggregate;
 
@@ -21,29 +22,18 @@ public sealed record EventTimeRange
 
     public static Result<EventTimeRange> Create(DateTime start, DateTime end)
     {
-        if (start == default)
-        {
-            return Result<EventTimeRange>.Fail(EventErrors.EventTimeRange.StartEmpty);
-        }
-        
-        if (end == default)
-        {
-            return Result<EventTimeRange>.Fail(EventErrors.EventTimeRange.EndEmpty);
-        }
-        
-        var errors = Validate(start, end);
-
-        if (errors.Count > 0)
-        {
-            return Result<EventTimeRange>.Fail(errors.ToArray());
-        }
-
-        return Result<EventTimeRange>.Ok(new EventTimeRange(start, end));
+        return new Success<(DateTime, DateTime)>((start, end))
+            .Ensure(t => t.Item1 != default, EventErrors.EventTimeRange.StartEmpty)
+            .Ensure(t => t.Item2 != default, EventErrors.EventTimeRange.EndEmpty)
+            .Bind(t => Validate(t.Item1, t.Item2) is { Count: > 0 } errors
+                ? (Result<(DateTime, DateTime)>)new Failure<(DateTime, DateTime)>(errors)
+                : new Success<(DateTime, DateTime)>(t))
+            .Map(t => new EventTimeRange(t.Item1, t.Item2));
     }
 
-    private static IReadOnlyList<Error> Validate(DateTime start, DateTime end)
+    private static IReadOnlyList<ResultError> Validate(DateTime start, DateTime end)
     {
-        var errors = new List<Error>();
+        var errors = new List<ResultError>();
 
         foreach (var rule in Rules)
         {
@@ -58,7 +48,7 @@ public sealed record EventTimeRange
         return errors;
     }
 
-    private delegate Error? ValidationRule(DateTime start, DateTime end);
+    private delegate ResultError? ValidationRule(DateTime start, DateTime end);
 
     private static readonly IReadOnlyList<ValidationRule> Rules =
     [
@@ -69,7 +59,7 @@ public sealed record EventTimeRange
         CheckDurationIsAtMost10Hours
     ];
     
-    private static Error? CheckEndIsAfterStart(DateTime start, DateTime end)
+    private static ResultError? CheckEndIsAfterStart(DateTime start, DateTime end)
     {
         if (start == default || end == default)
         {
@@ -81,7 +71,7 @@ public sealed record EventTimeRange
             : null;
     }
 
-    private static Error? CheckStartIsNotBefore08(DateTime start, DateTime end)
+    private static ResultError? CheckStartIsNotBefore08(DateTime start, DateTime end)
     {
         if (start == default || end == default)
         {
@@ -95,7 +85,7 @@ public sealed record EventTimeRange
             : null;
     }
 
-    private static Error? CheckEndIsWithinAllowedWindow(DateTime start, DateTime end)
+    private static ResultError? CheckEndIsWithinAllowedWindow(DateTime start, DateTime end)
     {
         if (start == default || end == default)
         {
@@ -127,7 +117,7 @@ public sealed record EventTimeRange
         return EventErrors.EventTimeRange.EndOutsideAllowedHours;
     }
 
-    private static Error? CheckDurationIsAtMost10Hours(DateTime start, DateTime end)
+    private static ResultError? CheckDurationIsAtMost10Hours(DateTime start, DateTime end)
     {
         if (start == default || end == default)
         {
@@ -144,7 +134,7 @@ public sealed record EventTimeRange
             : null;
     }
     
-    private static Error? CheckDurationIsAtLeast1Hour(DateTime start, DateTime end)
+    private static ResultError? CheckDurationIsAtLeast1Hour(DateTime start, DateTime end)
     {
         if (end < start)
         {

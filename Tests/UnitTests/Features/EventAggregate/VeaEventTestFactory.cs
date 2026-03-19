@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Domain.Aggregates.VeaEventAggregate;
 using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace UnitTests.Features.EventAggregate;
 
@@ -8,31 +9,31 @@ public static class VeaEventTestFactory
     public static VeaEvent CreateEvent()
     {
         var result = VeaEvent.Create();
-        return Assert.IsType<Result<VeaEvent>.Success>(result).Value;
+        return Assert.IsType<Success<VeaEvent>>(result).Value;
     }
 
     public static EventTitle CreateTitle(string value)
     {
         var result = EventTitle.Create(value);
-        return Assert.IsType<Result<EventTitle>.Success>(result).Value;
+        return Assert.IsType<Success<EventTitle>>(result).Value;
     }
 
     public static EventDescription CreateDescription(string value)
     {
         var result = EventDescription.Create(value);
-        return Assert.IsType<Result<EventDescription>.Success>(result).Value;
+        return Assert.IsType<Success<EventDescription>>(result).Value;
     }
 
     public static EventTimeRange CreateTimeRange(DateTime start, DateTime end)
     {
         var result = EventTimeRange.Create(start, end);
-        return Assert.IsType<Result<EventTimeRange>.Success>(result).Value;
+        return Assert.IsType<Success<EventTimeRange>>(result).Value;
     }
 
     public static EventGuestCapacity CreateGuestCapacity(int value)
     {
         var result = EventGuestCapacity.Create(value);
-        return Assert.IsType<Result<EventGuestCapacity>.Success>(result).Value;
+        return Assert.IsType<Success<EventGuestCapacity>>(result).Value;
     }
 
     public static VeaEvent CreateReadyEvent()
@@ -49,7 +50,7 @@ public static class VeaEventTestFactory
             now);
 
         var readyResult = veaEvent.MakeReady(now);
-        Assert.IsType<Result<VeaEvent>.Success>(readyResult);
+        Assert.IsType<Success<VeaEvent>>(readyResult);
 
         return veaEvent;
     }
@@ -60,7 +61,7 @@ public static class VeaEventTestFactory
         var now = new DateTime(2030, 08, 24, 12, 00, 00, DateTimeKind.Utc);
 
         var activeResult = veaEvent.MakeActive(now);
-        Assert.IsType<Result<VeaEvent>.Success>(activeResult);
+        Assert.IsType<Success<VeaEvent>>(activeResult);
 
         return veaEvent;
     }
@@ -87,7 +88,7 @@ public static class VeaEventTestFactory
     {
         var veaEvent = VeaEventTestFactory.CreateEvent();
         var cancelResult = veaEvent.Cancel();
-        Assert.IsType<Result<VeaEvent>.Success>(cancelResult);
+        Assert.IsType<Success<VeaEvent>>(cancelResult);
         return veaEvent;
     }
     

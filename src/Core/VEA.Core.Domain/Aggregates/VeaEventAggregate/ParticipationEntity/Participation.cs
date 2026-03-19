@@ -1,6 +1,7 @@
 ﻿using VEA.Core.Domain.Aggregates.GuestAggregate;
 using VEA.Core.Domain.Common.Bases;
 using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace VEA.Core.Domain.Aggregates.VeaEventAggregate.ParticipationEntity;
 
@@ -40,7 +41,7 @@ public sealed class Participation : Entity<ParticipationId>
             source: ParticipationSource.Public,
             eventId: eventId);
 
-        return Result<Participation>.Ok(participation);
+        return new Success<Participation>(participation);
     }
 
     internal static Result<Participation> CreateInvitation(
@@ -57,20 +58,19 @@ public sealed class Participation : Entity<ParticipationId>
             source: source,
             eventId: eventId);
 
-        return Result<Participation>.Ok(participation);
+        return new Success<Participation>(participation);
     }
 
     internal Result<Participation> AcceptInvitation()
     {
         if (Status != ParticipationStatus.Invited)
         {
-            return Result<Participation>.Fail(
-                ParticipationErrors.ParticipationStatus.AcceptRequiresInvited);
+            return new Failure<Participation>([ParticipationErrors.ParticipationStatus.AcceptRequiresInvited]);
         }
 
         Status = ParticipationStatus.Attending;
 
-        return Result<Participation>.Ok(this);
+        return new Success<Participation>(this);
     }
 
     internal Result<Participation> DeclineInvitation()
@@ -78,13 +78,12 @@ public sealed class Participation : Entity<ParticipationId>
         if (Status != ParticipationStatus.Invited &&
             Status != ParticipationStatus.Attending)
         {
-            return Result<Participation>.Fail(
-                ParticipationErrors.ParticipationStatus.DeclineRequiresInvitedOrAttending);
+            return new Failure<Participation>([ParticipationErrors.ParticipationStatus.DeclineRequiresInvitedOrAttending]);
         }
 
         Status = ParticipationStatus.Rejected;
 
-        return Result<Participation>.Ok(this);
+        return new Success<Participation>(this);
     }
 
     internal Result<Participation> CancelParticipation()
@@ -92,12 +91,11 @@ public sealed class Participation : Entity<ParticipationId>
         if (Status != ParticipationStatus.Attending &&
             Status != ParticipationStatus.Invited)
         {
-            return Result<Participation>.Fail(
-                ParticipationErrors.ParticipationStatus.CancelRequiresInvitedOrAttending);
+            return new Failure<Participation>([ParticipationErrors.ParticipationStatus.CancelRequiresInvitedOrAttending]);
         }
 
         Status = ParticipationStatus.Rejected;
 
-        return Result<Participation>.Ok(this);
+        return new Success<Participation>(this);
     }
 }

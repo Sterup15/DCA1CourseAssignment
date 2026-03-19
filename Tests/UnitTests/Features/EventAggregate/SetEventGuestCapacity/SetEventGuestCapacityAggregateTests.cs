@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Domain.Aggregates.VeaEventAggregate;
 using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace UnitTests.Features.EventAggregate.SetEventGuestCapacity;
 
@@ -20,7 +21,7 @@ public class SetEventGuestCapacityAggregateTests
         var result = veaEvent.SetGuestCapacity(guestCapacity);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(capacityValue, success.Value.GuestCapacity.Value);
         Assert.Equal(EventStatus.Draft, success.Value.Status);
     }
@@ -40,7 +41,7 @@ public class SetEventGuestCapacityAggregateTests
         var result = veaEvent.SetGuestCapacity(guestCapacity);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(capacityValue, success.Value.GuestCapacity.Value);
         Assert.Equal(EventStatus.Draft, success.Value.Status);
     }
@@ -61,7 +62,7 @@ public class SetEventGuestCapacityAggregateTests
         var result = veaEvent.SetGuestCapacity(guestCapacity);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(capacityValue, success.Value.GuestCapacity.Value);
         Assert.Equal(EventStatus.Active, success.Value.Status);
     }
@@ -88,7 +89,7 @@ public class SetEventGuestCapacityAggregateTests
         var veaEvent = VeaEventTestFactory.CreateActiveEvent();
 
         var increaseResult = veaEvent.SetGuestCapacity(VeaEventTestFactory.CreateGuestCapacity(10));
-        Assert.IsType<Result<VeaEvent>.Success>(increaseResult);
+        Assert.IsType<Success<VeaEvent>>(increaseResult);
 
         var lowerCapacity = VeaEventTestFactory.CreateGuestCapacity(5);
 
@@ -96,7 +97,7 @@ public class SetEventGuestCapacityAggregateTests
         var result = veaEvent.SetGuestCapacity(lowerCapacity);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.VeaEvent.ActiveEventGuestCapacityCanOnlyIncrease);
@@ -110,7 +111,7 @@ public class SetEventGuestCapacityAggregateTests
         // Arrange
         var veaEvent = VeaEventTestFactory.CreateEvent();
         var cancelResult = veaEvent.Cancel();
-        Assert.IsType<Result<VeaEvent>.Success>(cancelResult);
+        Assert.IsType<Success<VeaEvent>>(cancelResult);
 
         var guestCapacity = VeaEventTestFactory.CreateGuestCapacity(10);
 
@@ -118,7 +119,7 @@ public class SetEventGuestCapacityAggregateTests
         var result = veaEvent.SetGuestCapacity(guestCapacity);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.VeaEvent.CancelledEventCannotBeModified);
@@ -141,7 +142,7 @@ public class SetEventGuestCapacityAggregateTests
         var result = EventGuestCapacity.Create(capacityValue);
 
         // Assert
-        var failure = Assert.IsType<Result<EventGuestCapacity>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventGuestCapacity>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.EventGuestCapacity.TooSmall);
     }
 
@@ -154,7 +155,7 @@ public class SetEventGuestCapacityAggregateTests
         var result = EventGuestCapacity.Create(capacityValue);
 
         // Assert
-        var failure = Assert.IsType<Result<EventGuestCapacity>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventGuestCapacity>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.EventGuestCapacity.TooLarge);
     }
 }

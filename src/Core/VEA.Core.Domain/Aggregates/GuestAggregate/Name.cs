@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using VEA.Core.Tools.OperationResult;
 using VEA.Core.Tools.OperationResult.Errors;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace VEA.Core.Domain.Aggregates.GuestAggregate;
 
@@ -18,21 +19,13 @@ public sealed record Name
 
     public static Result<Name> Create(string? value)
     {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return Result<Name>.Fail(GuestErrors.Name.Empty);
-        }
-        
-        var normalizedValue = Normalize(value);
-        
-        var errors = Validate(normalizedValue);
-
-        if (errors.Count > 0)
-        {
-            return Result<Name>.Fail(errors.ToArray());
-        }
-
-        return Result<Name>.Ok(new Name(normalizedValue));
+        return new Success<string>(value ?? string.Empty)
+            .Ensure(v => !string.IsNullOrWhiteSpace(v), GuestErrors.Name.Empty)
+            .Map(Normalize)
+            .Bind(v => Validate(v) is { Count: > 0 } errors
+                ? (Result<string>)new Failure<string>(errors)
+                : new Success<string>(v))
+            .Map(v => new Name(v));
     }
 
     private static string Normalize(string? value)
@@ -48,9 +41,9 @@ public sealed record Name
                trimmed[1..].ToLowerInvariant();
     }
 
-    private static IReadOnlyList<Error> Validate(string value)
+    private static IReadOnlyList<ResultError> Validate(string value)
     {
-        var errors = new List<Error>();
+        var errors = new List<ResultError>();
 
         foreach (var rule in Rules)
         {
@@ -65,7 +58,7 @@ public sealed record Name
         return errors;
     }
 
-    private delegate Error? ValidationRule(string value);
+    private delegate ResultError? ValidationRule(string value);
 
     private static readonly IReadOnlyList<ValidationRule> Rules =
     [
@@ -75,7 +68,7 @@ public sealed record Name
     ];
     
 
-    private static Error? CheckTooShort(string value)
+    private static ResultError? CheckTooShort(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -87,7 +80,7 @@ public sealed record Name
             : null;
     }
 
-    private static Error? CheckTooLong(string value)
+    private static ResultError? CheckTooLong(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -99,7 +92,7 @@ public sealed record Name
             : null;
     }
     
-    private static Error? CheckLettersOnly(string value)
+    private static ResultError? CheckLettersOnly(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {

@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Tools.OperationResult;
 using VEA.Core.Tools.OperationResult.Errors;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace VEA.Core.Domain.Aggregates.VeaEventAggregate;
 
@@ -24,15 +25,15 @@ public sealed record EventDescription
 
         if (errors.Count > 0)
         {
-            return Result<EventDescription>.Fail(errors.ToArray());
+            return new Failure<EventDescription>(errors);
         }
 
-        return Result<EventDescription>.Ok(new EventDescription(normalizedValue));
+        return new Success<EventDescription>(new EventDescription(normalizedValue));
     }
 
-    private static IReadOnlyList<Error> Validate(string value)
+    private static IReadOnlyList<ResultError> Validate(string value)
     {
-        var errors = new List<Error>();
+        var errors = new List<ResultError>();
 
         foreach (var rule in Rules)
         {
@@ -47,14 +48,14 @@ public sealed record EventDescription
         return errors;
     }
 
-    private delegate Error? ValidationRule(string value);
+    private delegate ResultError? ValidationRule(string value);
 
     private static readonly IReadOnlyList<ValidationRule> Rules =
     [
         CheckTooLong
     ];
 
-    private static Error? CheckTooLong(string value)
+    private static ResultError? CheckTooLong(string value)
     {
         return value.Length > MaxLength
             ? EventErrors.EventDescription.TooLong

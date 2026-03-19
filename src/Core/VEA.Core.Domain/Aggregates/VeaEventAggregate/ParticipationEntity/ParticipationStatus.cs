@@ -1,4 +1,5 @@
 ﻿using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace VEA.Core.Domain.Aggregates.VeaEventAggregate.ParticipationEntity;
 
@@ -18,7 +19,7 @@ public sealed record ParticipationStatus
     public static Result<ParticipationStatus> Create(ParticipationStatusValue value)
     {
         return Enum.IsDefined(value)
-            ? Result<ParticipationStatus>.Ok(new ParticipationStatus(value))
+            ? new Success<ParticipationStatus>(new ParticipationStatus(value))
             : ParticipationErrors.ParticipationStatus.Invalid;
     }
 

@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Domain.Aggregates.VeaEventAggregate;
 using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace UnitTests.Features.EventAggregate.Values;
 
@@ -37,7 +38,7 @@ public sealed class EventIdTests
         Result<EventId> result = EventId.From(guid);
 
         // Assert
-        var success = Assert.IsType<Result<EventId>.Success>(result);
+        var success = Assert.IsType<Success<EventId>>(result);
         Assert.Equal(guid, success.Value.Value);
     }
 
@@ -48,9 +49,9 @@ public sealed class EventIdTests
         Result<EventId> result = EventId.From(Guid.Empty);
 
         // Assert
-        var failure = Assert.IsType<Result<EventId>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventId>>(result);
 
-        // If your Error type has Code:
+        // If your ResultError type has Code:
         Assert.Contains(failure.Errors, e => e.Code == EventErrors.EventId.Empty.Code);
     }
 
@@ -61,7 +62,7 @@ public sealed class EventIdTests
         Result<EventId> result = EventId.From(Guid.Empty);
 
         // Assert
-        var failure = Assert.IsType<Result<EventId>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventId>>(result);
         Assert.Single(failure.Errors);
     }
 }

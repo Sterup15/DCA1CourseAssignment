@@ -8,7 +8,7 @@ public static class LocationErrors
     {
         private const string LocationIdCode = "Location.LocationId";
 
-        public static readonly Error Empty =
+        public static readonly ResultError Empty =
             new(LocationIdCode + ".empty", "LocationId cannot be empty.");
     }
 }

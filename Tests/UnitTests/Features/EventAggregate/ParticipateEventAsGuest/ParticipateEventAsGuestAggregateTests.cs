@@ -2,6 +2,7 @@
 using VEA.Core.Domain.Aggregates.VeaEventAggregate;
 using VEA.Core.Domain.Aggregates.VeaEventAggregate.ParticipationEntity;
 using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace UnitTests.Features.EventAggregate.ParticipateEventAsGuest;
 
@@ -21,7 +22,7 @@ public class ParticipateEventAsGuestAggregateTests
         var result = veaEvent.ParticipateAsGuest(guest.Id, now);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         var updatedEvent = success.Value;
 
         Assert.Single(updatedEvent.Participations);
@@ -54,7 +55,7 @@ public class ParticipateEventAsGuestAggregateTests
         var result = veaEvent.ParticipateAsGuest(guest.Id, now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.Participation.OnlyActiveEventsCanBeJoined);
@@ -68,7 +69,7 @@ public class ParticipateEventAsGuestAggregateTests
         var veaEvent = VeaEventTestFactory.CreateEvent();
         veaEvent.SetVisibilityToPublic();
         var cancelResult = veaEvent.Cancel();
-        Assert.IsType<Result<VeaEvent>.Success>(cancelResult);
+        Assert.IsType<Success<VeaEvent>>(cancelResult);
 
         var guest = GuestTestFactory.CreateGuest();
         var now = VeaEventTestFactory.DefaultNow;
@@ -77,7 +78,7 @@ public class ParticipateEventAsGuestAggregateTests
         var result = veaEvent.ParticipateAsGuest(guest.Id, now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.Participation.OnlyActiveEventsCanBeJoined);
@@ -100,17 +101,17 @@ public class ParticipateEventAsGuestAggregateTests
 
         var now = VeaEventTestFactory.DefaultNow;
 
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(firstGuest.Id, now));
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(secondGuest.Id, now));
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(thirdGuest.Id, now));
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(fourthGuest.Id, now));
-        Assert.IsType<Result<VeaEvent>.Success>(veaEvent.ParticipateAsGuest(fifthGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(firstGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(secondGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(thirdGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(fourthGuest.Id, now));
+        Assert.IsType<Success<VeaEvent>>(veaEvent.ParticipateAsGuest(fifthGuest.Id, now));
 
         // Act
         var result = veaEvent.ParticipateAsGuest(sixthGuest.Id, now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.Participation.EventCapacityReached);
@@ -131,7 +132,7 @@ public class ParticipateEventAsGuestAggregateTests
         var result = veaEvent.ParticipateAsGuest(guest.Id, now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.Participation.OnlyFutureEventsCanBeParticipated);
@@ -152,7 +153,7 @@ public class ParticipateEventAsGuestAggregateTests
         var result = veaEvent.ParticipateAsGuest(guest.Id, now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.Participation.OnlyPublicEventsCanBeParticipatedDirectly);
@@ -170,13 +171,13 @@ public class ParticipateEventAsGuestAggregateTests
         var now = VeaEventTestFactory.DefaultNow;
 
         var firstJoinResult = veaEvent.ParticipateAsGuest(guest.Id, now);
-        Assert.IsType<Result<VeaEvent>.Success>(firstJoinResult);
+        Assert.IsType<Success<VeaEvent>>(firstJoinResult);
 
         // Act
         var result = veaEvent.ParticipateAsGuest(guest.Id, now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.Participation.GuestAlreadyHasParticipation);

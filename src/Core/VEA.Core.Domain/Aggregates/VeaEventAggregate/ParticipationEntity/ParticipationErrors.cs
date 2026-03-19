@@ -8,7 +8,7 @@ public static class ParticipationErrors
     {
         private const string ParticipationIdCode = "Participation.ParticipationId";
 
-        public static readonly Error Empty =
+        public static readonly ResultError Empty =
             new(ParticipationIdCode + ".empty", "ParticipationId cannot be empty.");
     }
     
@@ -16,17 +16,17 @@ public static class ParticipationErrors
     {
         private const string ParticipationStatusCode = "Participation.Status";
 
-        public static readonly Error Invalid =
+        public static readonly ResultError Invalid =
             new(ParticipationStatusCode + ".invalid", "Participation status is invalid.");
 
-        public static readonly Error AcceptRequiresInvited =
+        public static readonly ResultError AcceptRequiresInvited =
             new(ParticipationStatusCode + ".acceptRequiresInvited", "Only invited participation can be accepted.");
 
-        public static readonly Error DeclineRequiresInvitedOrAttending =
+        public static readonly ResultError DeclineRequiresInvitedOrAttending =
             new(ParticipationStatusCode + ".declineRequiresInvitedOrAttending",
                 "Only invited or attending participation can be declined.");
 
-        public static readonly Error CancelRequiresInvitedOrAttending =
+        public static readonly ResultError CancelRequiresInvitedOrAttending =
             new(ParticipationStatusCode + ".cancelRequiresInvitedOrAttending", "Only invited or attending participation can be cancelled.");
     }
     
@@ -34,7 +34,7 @@ public static class ParticipationErrors
     {
         private const string ParticipationSourceCode = "Participation.Source";
 
-        public static readonly Error Invalid =
+        public static readonly ResultError Invalid =
             new(ParticipationSourceCode + ".invalid", "Participation source is invalid.");
     }
     
@@ -42,7 +42,7 @@ public static class ParticipationErrors
     {
         private const string Code = "Participation.JoinReason";
 
-        public static readonly Error TooLong =
+        public static readonly ResultError TooLong =
             new(Code + ".tooLong", "Participation join reason cannot exceed 100 characters.");
     }
 

@@ -1,6 +1,7 @@
 ﻿using VEA.Core.Domain.Common.Bases;
 using VEA.Core.Tools.OperationResult;
 using VEA.Core.Tools.OperationResult.Errors;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace VEA.Core.Domain.Aggregates.GuestAggregate;
 
@@ -39,7 +40,7 @@ public sealed class Guest : AggregateRoot<GuestId>
 
         if (validationError is not null)
         {
-            return Result<Guest>.Fail(validationError);
+            return new Failure<Guest>([validationError]);
         }
 
         var guest = new Guest(
@@ -49,10 +50,10 @@ public sealed class Guest : AggregateRoot<GuestId>
             viaMail: email,
             profilePictureUrl: url);
 
-        return Result<Guest>.Ok(guest);
+        return new Success<Guest>(guest);
     }
 
-    private static Error? ValidateProfilePictureUrl(Uri url)
+    private static ResultError? ValidateProfilePictureUrl(Uri url)
     {
         if (!url.IsAbsoluteUri)
         {

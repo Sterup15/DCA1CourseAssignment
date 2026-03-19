@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Domain.Aggregates.VeaEventAggregate;
 using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace UnitTests.Features.EventAggregate.Create;
 
@@ -12,7 +13,7 @@ public class CreateEventAggregateTests
         var result = VeaEvent.Create();
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         var veaEvent = success.Value;
 
         Assert.NotEqual(default, veaEvent.Id);
@@ -31,7 +32,7 @@ public class CreateEventAggregateTests
         var result = VeaEvent.Create();
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         var veaEvent = success.Value;
 
         Assert.Equal("Working Title", veaEvent.Title.Value);
@@ -44,7 +45,7 @@ public class CreateEventAggregateTests
         var result = VeaEvent.Create();
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         var veaEvent = success.Value;
 
         Assert.Equal(string.Empty, veaEvent.Description.Value);
@@ -57,7 +58,7 @@ public class CreateEventAggregateTests
         var result = VeaEvent.Create();
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         var veaEvent = success.Value;
 
         Assert.Equal(EventVisibility.Private, veaEvent.Visibility);

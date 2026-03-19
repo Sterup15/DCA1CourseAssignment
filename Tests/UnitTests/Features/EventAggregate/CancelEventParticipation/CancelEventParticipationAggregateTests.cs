@@ -1,6 +1,7 @@
 ﻿using UnitTests.Features.GuestAggregate;
 using VEA.Core.Domain.Aggregates.VeaEventAggregate;
 using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace UnitTests.Features.EventAggregate.CancelEventParticipation;
 
@@ -17,14 +18,14 @@ public class CancelEventParticipationAggregateTests
         var now = VeaEventTestFactory.DefaultNow;
 
         var joinResult = veaEvent.ParticipateAsGuest(guest.Id, now);
-        Assert.IsType<Result<VeaEvent>.Success>(joinResult);
+        Assert.IsType<Success<VeaEvent>>(joinResult);
         Assert.Single(veaEvent.Participations);
 
         // Act
         var result = veaEvent.CancelParticipation(guest.Id, now);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Empty(success.Value.Participations);
     }
 
@@ -44,7 +45,7 @@ public class CancelEventParticipationAggregateTests
         var result = veaEvent.CancelParticipation(guest.Id, now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.Participation.ParticipationNotFound);
@@ -63,7 +64,7 @@ public class CancelEventParticipationAggregateTests
         var beforeStart = VeaEventTestFactory.DefaultNow;
 
         var joinResult = veaEvent.ParticipateAsGuest(guest.Id, beforeStart);
-        Assert.IsType<Result<VeaEvent>.Success>(joinResult);
+        Assert.IsType<Success<VeaEvent>>(joinResult);
         Assert.Single(veaEvent.Participations);
 
         var afterStart = new DateTime(2030, 08, 25, 13, 30, 00, DateTimeKind.Utc);
@@ -72,7 +73,7 @@ public class CancelEventParticipationAggregateTests
         var result = veaEvent.CancelParticipation(guest.Id, afterStart);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(
             failure.Errors,
             e => e == EventErrors.Participation.CannotCancelParticipationInPastOrOngoingEvents);

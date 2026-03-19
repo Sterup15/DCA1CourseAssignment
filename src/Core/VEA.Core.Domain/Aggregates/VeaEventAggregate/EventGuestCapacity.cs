@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Tools.OperationResult;
 using VEA.Core.Tools.OperationResult.Errors;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace VEA.Core.Domain.Aggregates.VeaEventAggregate;
 
@@ -22,15 +23,15 @@ public sealed record EventGuestCapacity
 
         if (errors.Count > 0)
         {
-            return Result<EventGuestCapacity>.Fail(errors.ToArray());
+            return new Failure<EventGuestCapacity>(errors);
         }
 
-        return Result<EventGuestCapacity>.Ok(new EventGuestCapacity(value));
+        return new Success<EventGuestCapacity>(new EventGuestCapacity(value));
     }
 
-    private static IReadOnlyList<Error> Validate(int value)
+    private static IReadOnlyList<ResultError> Validate(int value)
     {
-        var errors = new List<Error>();
+        var errors = new List<ResultError>();
 
         foreach (var rule in Rules)
         {
@@ -45,7 +46,7 @@ public sealed record EventGuestCapacity
         return errors;
     }
 
-    private delegate Error? ValidationRule(int value);
+    private delegate ResultError? ValidationRule(int value);
 
     private static readonly IReadOnlyList<ValidationRule> Rules =
     [
@@ -53,14 +54,14 @@ public sealed record EventGuestCapacity
         CheckTooLarge
     ];
 
-    private static Error? CheckTooSmall(int value)
+    private static ResultError? CheckTooSmall(int value)
     {
         return value < MinCapacity
             ? EventErrors.EventGuestCapacity.TooSmall
             : null;
     }
 
-    private static Error? CheckTooLarge(int value)
+    private static ResultError? CheckTooLarge(int value)
     {
         return value > MaxCapacity
             ? EventErrors.EventGuestCapacity.TooLarge

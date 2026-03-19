@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Domain.Aggregates.VeaEventAggregate;
 using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace UnitTests.Features.EventAggregate.ActivateEvent;
 
@@ -26,7 +27,7 @@ public class ActivateEventAggregateTests
         var result = veaEvent.MakeActive(now);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(EventStatus.Active, success.Value.Status);
     }
 
@@ -41,7 +42,7 @@ public class ActivateEventAggregateTests
         var result = veaEvent.MakeActive(now);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(EventStatus.Active, success.Value.Status);
     }
 
@@ -56,7 +57,7 @@ public class ActivateEventAggregateTests
         var result = veaEvent.MakeActive(now);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(EventStatus.Active, success.Value.Status);
     }
 
@@ -78,7 +79,7 @@ public class ActivateEventAggregateTests
         var result = veaEvent.MakeActive(now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.VeaEvent.TitleMustNotBeDefault);
         Assert.Equal(EventStatus.Draft, veaEvent.Status);
     }
@@ -101,7 +102,7 @@ public class ActivateEventAggregateTests
         var result = veaEvent.MakeActive(now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.VeaEvent.DescriptionMustNotBeDefault);
         Assert.Equal(EventStatus.Draft, veaEvent.Status);
     }
@@ -120,7 +121,7 @@ public class ActivateEventAggregateTests
         var result = veaEvent.MakeActive(now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.VeaEvent.TimeRangeMustBeSet);
         Assert.Equal(EventStatus.Draft, veaEvent.Status);
     }
@@ -136,7 +137,7 @@ public class ActivateEventAggregateTests
         var result = veaEvent.MakeActive(now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.VeaEvent.TitleMustNotBeDefault);
         Assert.Contains(failure.Errors, e => e == EventErrors.VeaEvent.DescriptionMustNotBeDefault);
         Assert.Contains(failure.Errors, e => e == EventErrors.VeaEvent.TimeRangeMustBeSet);
@@ -149,7 +150,7 @@ public class ActivateEventAggregateTests
         // Arrange
         var veaEvent = VeaEventTestFactory.CreateEvent();
         var cancelResult = veaEvent.Cancel();
-        Assert.IsType<Result<VeaEvent>.Success>(cancelResult);
+        Assert.IsType<Success<VeaEvent>>(cancelResult);
 
         var now = new DateTime(2030, 08, 24, 12, 00, 00, DateTimeKind.Utc);
 
@@ -157,7 +158,7 @@ public class ActivateEventAggregateTests
         var result = veaEvent.MakeActive(now);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.VeaEvent.CancelledEventCannotBeActivated);
         Assert.Equal(EventStatus.Cancelled, veaEvent.Status);
     }

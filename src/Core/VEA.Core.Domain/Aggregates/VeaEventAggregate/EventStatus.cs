@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Tools.OperationResult;
 using VEA.Core.Tools.OperationResult.Errors;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace VEA.Core.Domain.Aggregates.VeaEventAggregate;
 
@@ -22,8 +23,8 @@ public sealed record EventStatus
     public static Result<EventStatus> Create(EventStatusValue value)
     {
         return Enum.IsDefined(value)
-            ? Result<EventStatus>.Ok(new EventStatus(value))
-            : Result<EventStatus>.Fail(EventErrors.EventStatus.Invalid);
+            ? new Success<EventStatus>(new EventStatus(value))
+            : new Failure<EventStatus>([EventErrors.EventStatus.Invalid]);
     }
 
     public Result<EventStatus> ChangeTo(EventStatus nextStatus)
@@ -32,13 +33,13 @@ public sealed record EventStatus
 
         if (error is not null)
         {
-            return Result<EventStatus>.Fail(error);
+            return new Failure<EventStatus>([error]);
         }
 
-        return Result<EventStatus>.Ok(nextStatus);
+        return new Success<EventStatus>(nextStatus);
     }
 
-    private static Error? GetTransitionError(EventStatusValue current, EventStatusValue next)
+    private static ResultError? GetTransitionError(EventStatusValue current, EventStatusValue next)
     {
         if (!Enum.IsDefined(current) || !Enum.IsDefined(next))
         {

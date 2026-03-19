@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Domain.Aggregates.GuestAggregate;
 using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace UnitTests.Features.GuestAggregate.RegisterGuest;
 
@@ -24,7 +25,7 @@ public class RegisterGuestAggregateTests
         var result = Guest.Create(firstName, lastName, viaMail, profilePictureUrl);
 
         // Assert
-        var success = Assert.IsType<Result<Guest>.Success>(result);
+        var success = Assert.IsType<Success<Guest>>(result);
         var guest = success.Value;
 
         Assert.NotEqual(default, guest.Id);
@@ -54,7 +55,7 @@ public class RegisterGuestAggregateTests
         var result = Guest.Create(firstName, lastName, viaMail);
 
         // Assert
-        var success = Assert.IsType<Result<Guest>.Success>(result);
+        var success = Assert.IsType<Success<Guest>>(result);
         var guest = success.Value;
 
         Assert.Equal(
@@ -72,7 +73,7 @@ public class RegisterGuestAggregateTests
         var result = ViaMail.Create(rawEmail);
 
         // Assert
-        var failure = Assert.IsType<Result<ViaMail>.Failure>(result);
+        var failure = Assert.IsType<Failure<ViaMail>>(result);
         Assert.Contains(failure.Errors, e => e == GuestErrors.ViaMail.InvalidDomain);
     }
 
@@ -89,7 +90,7 @@ public class RegisterGuestAggregateTests
         var result = ViaMail.Create(rawEmail);
 
         // Assert
-        var failure = Assert.IsType<Result<ViaMail>.Failure>(result);
+        var failure = Assert.IsType<Failure<ViaMail>>(result);
         Assert.True(
             failure.Errors.Contains(GuestErrors.ViaMail.InvalidFormat) ||
             failure.Errors.Contains(GuestErrors.ViaMail.InvalidDomain));
@@ -105,7 +106,7 @@ public class RegisterGuestAggregateTests
         var result = ViaMail.Create(rawEmail, isEmailInUse: true);
 
         // Assert
-        var failure = Assert.IsType<Result<ViaMail>.Failure>(result);
+        var failure = Assert.IsType<Failure<ViaMail>>(result);
         Assert.Contains(failure.Errors, e => e == GuestErrors.ViaMail.EmailInUse);
     }
 
@@ -119,7 +120,7 @@ public class RegisterGuestAggregateTests
         var result = Name.Create(rawFirstName);
 
         // Assert
-        var failure = Assert.IsType<Result<Name>.Failure>(result);
+        var failure = Assert.IsType<Failure<Name>>(result);
         Assert.True(
             failure.Errors.Contains(GuestErrors.Name.Empty) ||
             failure.Errors.Contains(GuestErrors.Name.TooShort) ||
@@ -137,7 +138,7 @@ public class RegisterGuestAggregateTests
         var result = Name.Create(rawLastName);
 
         // Assert
-        var failure = Assert.IsType<Result<Name>.Failure>(result);
+        var failure = Assert.IsType<Failure<Name>>(result);
         Assert.True(
             failure.Errors.Contains(GuestErrors.Name.Empty) ||
             failure.Errors.Contains(GuestErrors.Name.TooShort) ||
@@ -158,7 +159,7 @@ public class RegisterGuestAggregateTests
         var result = Guest.Create(firstName, lastName, viaMail, relativeUrl);
 
         // Assert
-        var failure = Assert.IsType<Result<Guest>.Failure>(result);
+        var failure = Assert.IsType<Failure<Guest>>(result);
         Assert.Contains(failure.Errors, e => e == GuestErrors.ProfilePicture.InvalidUrl);
     }
 
@@ -177,7 +178,7 @@ public class RegisterGuestAggregateTests
         var result = Guest.Create(firstName, lastName, viaMail, url);
 
         // Assert
-        var failure = Assert.IsType<Result<Guest>.Failure>(result);
+        var failure = Assert.IsType<Failure<Guest>>(result);
         Assert.Contains(failure.Errors, e => e == GuestErrors.ProfilePicture.InvalidScheme);
     }
 }

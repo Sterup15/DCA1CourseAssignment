@@ -1,5 +1,6 @@
 ﻿using VEA.Core.Domain.Aggregates.VeaEventAggregate;
 using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace UnitTests.Features.EventAggregate.UpdateEventTitle;
 
@@ -19,7 +20,7 @@ public class UpdateEventTitleAggregateTests
         var result = veaEvent.UpdateTitle(title);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(newTitleRaw, success.Value.Title.Value);
         Assert.Equal(EventStatus.Draft, success.Value.Status);
     }
@@ -38,7 +39,7 @@ public class UpdateEventTitleAggregateTests
         var result = veaEvent.UpdateTitle(title);
 
         // Assert
-        var success = Assert.IsType<Result<VeaEvent>.Success>(result);
+        var success = Assert.IsType<Success<VeaEvent>>(result);
         Assert.Equal(newTitleRaw, success.Value.Title.Value);
         Assert.Equal(EventStatus.Draft, success.Value.Status);
     }
@@ -50,7 +51,7 @@ public class UpdateEventTitleAggregateTests
         var result = EventTitle.Create(string.Empty);
 
         // Assert
-        var failure = Assert.IsType<Result<EventTitle>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventTitle>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.EventTitle.Empty);
     }
 
@@ -63,7 +64,7 @@ public class UpdateEventTitleAggregateTests
         var result = EventTitle.Create(rawTitle);
 
         // Assert
-        var failure = Assert.IsType<Result<EventTitle>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventTitle>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.EventTitle.TooShort);
     }
 
@@ -77,7 +78,7 @@ public class UpdateEventTitleAggregateTests
         var result = EventTitle.Create(rawTitle);
 
         // Assert
-        var failure = Assert.IsType<Result<EventTitle>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventTitle>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.EventTitle.TooLong);
     }
 
@@ -88,7 +89,7 @@ public class UpdateEventTitleAggregateTests
         var result = EventTitle.Create(null);
 
         // Assert
-        var failure = Assert.IsType<Result<EventTitle>.Failure>(result);
+        var failure = Assert.IsType<Failure<EventTitle>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.EventTitle.Empty);
     }
 
@@ -103,7 +104,7 @@ public class UpdateEventTitleAggregateTests
         var result = veaEvent.UpdateTitle(title);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.VeaEvent.ActiveEventCannotBeModified);
         Assert.Equal(EventStatus.Active, veaEvent.Status);
     }
@@ -114,7 +115,7 @@ public class UpdateEventTitleAggregateTests
         // Arrange
         var veaEvent = VeaEventTestFactory.CreateEvent();
         var cancelResult = veaEvent.Cancel();
-        Assert.IsType<Result<VeaEvent>.Success>(cancelResult);
+        Assert.IsType<Success<VeaEvent>>(cancelResult);
 
         var title = VeaEventTestFactory.CreateTitle("Scary Movie Night!");
 
@@ -122,7 +123,7 @@ public class UpdateEventTitleAggregateTests
         var result = veaEvent.UpdateTitle(title);
 
         // Assert
-        var failure = Assert.IsType<Result<VeaEvent>.Failure>(result);
+        var failure = Assert.IsType<Failure<VeaEvent>>(result);
         Assert.Contains(failure.Errors, e => e == EventErrors.VeaEvent.CancelledEventCannotBeModified);
         Assert.Equal(EventStatus.Cancelled, veaEvent.Status);
     }

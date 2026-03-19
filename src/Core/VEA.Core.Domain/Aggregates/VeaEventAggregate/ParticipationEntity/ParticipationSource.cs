@@ -1,4 +1,5 @@
 ﻿using VEA.Core.Tools.OperationResult;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace VEA.Core.Domain.Aggregates.VeaEventAggregate.ParticipationEntity;
 
@@ -17,7 +18,7 @@ public sealed record ParticipationSource
     public static Result<ParticipationSource> Create(ParticipationSourceValue value)
     {
         return Enum.IsDefined(value)
-            ? Result<ParticipationSource>.Ok(new ParticipationSource(value))
+            ? new Success<ParticipationSource>(new ParticipationSource(value))
             : ParticipationErrors.ParticipationSource.Invalid;
     }
 
