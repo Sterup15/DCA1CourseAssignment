@@ -3,6 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{BA16856F-E0F3-421F-87CC-05446202B347}"
 	ProjectSection(SolutionItems) = preProject
 		Documentation\Assignment04.md = Documentation\Assignment04.md
+		Documentation\Assignment08.md = Documentation\Assignment08.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0F9FBD7F-2ABC-43EF-B7A4-DC86F74CDC2B}"
