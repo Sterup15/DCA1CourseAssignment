@@ -19,9 +19,12 @@ public class CancelEventParticipationHandlerTests
         var guestId = GuestId.New();
         veaEvent.ParticipateAsGuest(guestId, VeaEventTestFactory.DefaultNow);
 
+        var db = new FakeDbContext();
+        db.Events.Add(veaEvent);
+        await db.SaveChangesAsync();
         var command = Assert.IsType<Success<CancelEventParticipationCommand>>(
             CancelEventParticipationCommand.Create(veaEvent.Id.ToString(), guestId.ToString())).Value;
-        var handler = new CancelEventParticipationHandler(new FakeVeaEventRepository(veaEvent), new FakeUnitOfWork());
+        var handler = new CancelEventParticipationHandler(new FakeVeaEventRepository(db), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);
@@ -36,7 +39,7 @@ public class CancelEventParticipationHandlerTests
         // Arrange
         var command = Assert.IsType<Success<CancelEventParticipationCommand>>(
             CancelEventParticipationCommand.Create(EventId.New().ToString(), GuestId.New().ToString())).Value;
-        var handler = new CancelEventParticipationHandler(new FakeVeaEventRepository(null), new FakeUnitOfWork());
+        var handler = new CancelEventParticipationHandler(new FakeVeaEventRepository(new FakeDbContext()), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);

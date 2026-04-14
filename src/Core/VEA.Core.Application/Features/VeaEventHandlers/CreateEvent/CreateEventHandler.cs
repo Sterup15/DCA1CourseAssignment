@@ -1,6 +1,7 @@
 using VEA.Core.Application.AppEntry;
 using VEA.Core.Application.AppEntry.Commands.VeaEventCommands;
 using VEA.Core.Domain.Aggregates.VeaEventAggregate;
+using VEA.Core.Domain.Aggregates.VeaEventAggregate.IRepository;
 using VEA.Core.Domain.Common;
 using VEA.Core.Tools.OperationResult;
 using VEA.Core.Tools.OperationResult.Result;

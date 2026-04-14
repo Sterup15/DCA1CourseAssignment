@@ -18,9 +18,12 @@ public class ParticipateEventAsGuestHandlerTests
         veaEvent.SetVisibilityToPublic();
         var guestId = GuestId.New();
 
+        var db = new FakeDbContext();
+        db.Events.Add(veaEvent);
+        await db.SaveChangesAsync();
         var command = Assert.IsType<Success<ParticipateEventAsGuestCommand>>(
             ParticipateEventAsGuestCommand.Create(veaEvent.Id.ToString(), guestId.ToString())).Value;
-        var handler = new ParticipateEventAsGuestHandler(new FakeVeaEventRepository(veaEvent), new FakeUnitOfWork());
+        var handler = new ParticipateEventAsGuestHandler(new FakeVeaEventRepository(db), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);
@@ -35,7 +38,7 @@ public class ParticipateEventAsGuestHandlerTests
         // Arrange
         var command = Assert.IsType<Success<ParticipateEventAsGuestCommand>>(
             ParticipateEventAsGuestCommand.Create(EventId.New().ToString(), GuestId.New().ToString())).Value;
-        var handler = new ParticipateEventAsGuestHandler(new FakeVeaEventRepository(null), new FakeUnitOfWork());
+        var handler = new ParticipateEventAsGuestHandler(new FakeVeaEventRepository(new FakeDbContext()), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);

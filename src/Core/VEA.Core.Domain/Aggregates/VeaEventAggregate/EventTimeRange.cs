@@ -14,6 +14,7 @@ public sealed record EventTimeRange
     public DateTime Start { get; }
     public DateTime End { get; }
 
+    private EventTimeRange() {} // EFC
     private EventTimeRange(DateTime start, DateTime end)
     {
         Start = start;

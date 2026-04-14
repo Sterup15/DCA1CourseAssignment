@@ -102,6 +102,16 @@ public static class ResultExtensions
             ((Success<T3>)r3).Value));
     }
 
+    // GetValue: extract the success value, throws if failure
+    public static T GetValue<T>(this Result<T> result)
+        => result switch
+        {
+            Success<T> s => s.Value,
+            Failure<T> f => throw new InvalidOperationException(
+                string.Join(", ", f.Errors.Select(e => e.Message))),
+            _ => throw new UnreachableException(),
+        };
+
     // WithPayloadIfSuccess: replace the success value, propagate errors on failure
     public static Result<TOut> WithPayloadIfSuccess<T, TOut>(
         this Result<T> result,

@@ -15,6 +15,7 @@ public sealed class Guest : AggregateRoot<GuestId>
     internal ViaMail ViaMail { get; private set; }
     internal Uri ProfilePictureUrl { get; private set; }
 
+    private Guest(){} //EFC
     private Guest(
         GuestId id,
         Name firstName,

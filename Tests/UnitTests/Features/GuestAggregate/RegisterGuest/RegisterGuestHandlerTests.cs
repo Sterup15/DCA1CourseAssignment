@@ -15,7 +15,7 @@ public class RegisterGuestHandlerTests
         // Arrange
         var command = Assert.IsType<Success<RegisterGuestCommand>>(
             RegisterGuestCommand.Create("John", "Doe", "abc@via.dk")).Value;
-        var handler = new RegisterGuestHandler(new FakeGuestRepository(), new FakeUnitOfWork());
+        var handler = new RegisterGuestHandler(new FakeGuestRepository(new FakeDbContext()), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);

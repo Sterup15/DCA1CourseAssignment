@@ -21,6 +21,7 @@ public sealed class VeaEvent : AggregateRoot<EventId>
     internal IReadOnlyCollection<Participation> Participations => _participations.AsReadOnly();
     internal EventGuestCapacity GuestCapacity { get; private set; }
 
+    private VeaEvent() {} // EFC
     private VeaEvent(
         EventId id,
         EventTitle title,

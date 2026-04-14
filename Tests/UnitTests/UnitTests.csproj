@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="ClaudeCode" Version="1.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.14" />
         <PackageReference Include="coverlet.collector" Version="6.0.2"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0"/>
         <PackageReference Include="xunit" Version="2.9.2"/>
@@ -26,6 +27,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\Core\VEA.Core.Domain\VEA.Core.Domain.csproj" />
       <ProjectReference Include="..\..\src\Core\VEA.Core.Application\VEA.Core.Application.csproj" />
+      <ProjectReference Include="..\..\src\Infrastructure\VEA.Infrastructure.EfcPersistence\VEA.Infrastructure.EfcPersistence.csproj" />
     </ItemGroup>
 
 </Project>

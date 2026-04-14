@@ -14,9 +14,12 @@ public class MakeEventPublicHandlerTests
     {
         // Arrange
         var veaEvent = VeaEventTestFactory.CreateEvent();
+        var db = new FakeDbContext();
+        db.Events.Add(veaEvent);
+        await db.SaveChangesAsync();
         var command = Assert.IsType<Success<MakeEventPublicCommand>>(
             MakeEventPublicCommand.Create(veaEvent.Id.ToString())).Value;
-        var handler = new MakeEventPublicHandler(new FakeVeaEventRepository(veaEvent), new FakeUnitOfWork());
+        var handler = new MakeEventPublicHandler(new FakeVeaEventRepository(db), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);
@@ -31,7 +34,7 @@ public class MakeEventPublicHandlerTests
         // Arrange
         var command = Assert.IsType<Success<MakeEventPublicCommand>>(
             MakeEventPublicCommand.Create(EventId.New().ToString())).Value;
-        var handler = new MakeEventPublicHandler(new FakeVeaEventRepository(null), new FakeUnitOfWork());
+        var handler = new MakeEventPublicHandler(new FakeVeaEventRepository(new FakeDbContext()), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);

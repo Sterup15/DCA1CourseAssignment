@@ -1,6 +1,7 @@
 using VEA.Core.Application.AppEntry;
 using VEA.Core.Application.AppEntry.Commands.VeaEventCommands;
 using VEA.Core.Domain.Aggregates.VeaEventAggregate;
+using VEA.Core.Domain.Aggregates.VeaEventAggregate.IRepository;
 using VEA.Core.Domain.Common;
 using VEA.Core.Tools.OperationResult;
 using VEA.Core.Tools.OperationResult.Result;
@@ -20,20 +21,12 @@ internal class InviteGuestHandler : ICommandHandler<InviteGuestCommand, None>
 
     public async Task<Result<None>> HandleAsync(InviteGuestCommand command)
     {
-        var veaEvent = await _repository.GetByIdAsync(command.EventId);
-
-        if (veaEvent is null)
-        {
-            return new Failure<None>([EventErrors.VeaEvent.EventNotFound]);
-        }
-
-        var result = veaEvent.InviteGuest(command.GuestId, command.Source, command.JoinReason)
+        var result = (await _repository.GetAsync(command.EventId))
+            .Bind(veaEvent => veaEvent.InviteGuest(command.GuestId, command.Source, command.JoinReason))
             .WithPayloadIfSuccess(new None());
 
         if (result is Success<None>)
-        {
             await _unitOfWork.SaveChangesAsync();
-        }
 
         return result;
     }

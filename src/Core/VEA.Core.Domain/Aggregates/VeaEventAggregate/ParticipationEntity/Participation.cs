@@ -13,6 +13,7 @@ public sealed class Participation : Entity<ParticipationId>
     internal ParticipationSource Source { get; private set; }
     internal EventId EventId { get; private set; }
 
+    private Participation() {} // EFC
     private Participation(
         ParticipationId id,
         ParticipationStatus status,

@@ -14,9 +14,12 @@ public class UpdateEventDescriptionHandlerTests
     {
         // Arrange
         var veaEvent = VeaEventTestFactory.CreateEvent();
+        var db = new FakeDbContext();
+        db.Events.Add(veaEvent);
+        await db.SaveChangesAsync();
         var command = Assert.IsType<Success<UpdateEventDescriptionCommand>>(
             UpdateEventDescriptionCommand.Create(veaEvent.Id.ToString(), "A new description.")).Value;
-        var handler = new UpdateEventDescriptionHandler(new FakeVeaEventRepository(veaEvent), new FakeUnitOfWork());
+        var handler = new UpdateEventDescriptionHandler(new FakeVeaEventRepository(db), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);
@@ -31,7 +34,7 @@ public class UpdateEventDescriptionHandlerTests
         // Arrange
         var command = Assert.IsType<Success<UpdateEventDescriptionCommand>>(
             UpdateEventDescriptionCommand.Create(EventId.New().ToString(), "A new description.")).Value;
-        var handler = new UpdateEventDescriptionHandler(new FakeVeaEventRepository(null), new FakeUnitOfWork());
+        var handler = new UpdateEventDescriptionHandler(new FakeVeaEventRepository(new FakeDbContext()), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);

@@ -4,6 +4,14 @@ namespace VEA.Core.Domain.Aggregates.GuestAggregate;
 
 public static class GuestErrors
 {
+    public static class Guest
+    {
+        private const string Code = "Guest";
+
+        public static readonly ResultError NotFound =
+            new(Code + ".notFound", "Guest was not found.");
+    }
+
     public static class GuestId
     {
         private const string GuestIdCode = "Guest.GuestId";

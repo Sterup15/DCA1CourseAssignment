@@ -19,9 +19,12 @@ public class GuestDeclinesInvitationHandlerTests
         var guestId = GuestId.New();
         veaEvent.InviteGuest(guestId, ParticipationSource.Public);
 
+        var db = new FakeDbContext();
+        db.Events.Add(veaEvent);
+        await db.SaveChangesAsync();
         var command = Assert.IsType<Success<GuestDeclinesInvitationCommand>>(
             GuestDeclinesInvitationCommand.Create(veaEvent.Id.ToString(), guestId.ToString())).Value;
-        var handler = new GuestDeclinesInvitationHandler(new FakeVeaEventRepository(veaEvent), new FakeUnitOfWork());
+        var handler = new GuestDeclinesInvitationHandler(new FakeVeaEventRepository(db), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);
@@ -36,7 +39,7 @@ public class GuestDeclinesInvitationHandlerTests
         // Arrange
         var command = Assert.IsType<Success<GuestDeclinesInvitationCommand>>(
             GuestDeclinesInvitationCommand.Create(EventId.New().ToString(), GuestId.New().ToString())).Value;
-        var handler = new GuestDeclinesInvitationHandler(new FakeVeaEventRepository(null), new FakeUnitOfWork());
+        var handler = new GuestDeclinesInvitationHandler(new FakeVeaEventRepository(new FakeDbContext()), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);

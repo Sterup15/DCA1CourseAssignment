@@ -14,11 +14,14 @@ public class UpdateEventTimeRangeHandlerTests
     {
         // Arrange
         var veaEvent = VeaEventTestFactory.CreateEvent();
+        var db = new FakeDbContext();
+        db.Events.Add(veaEvent);
+        await db.SaveChangesAsync();
         var start = new DateTime(2030, 8, 25, 13, 0, 0, DateTimeKind.Utc);
         var end = new DateTime(2030, 8, 25, 15, 0, 0, DateTimeKind.Utc);
         var command = Assert.IsType<Success<UpdateEventTimeRangeCommand>>(
             UpdateEventTimeRangeCommand.Create(veaEvent.Id.ToString(), start, end)).Value;
-        var handler = new UpdateEventTimeRangeHandler(new FakeVeaEventRepository(veaEvent), new FakeUnitOfWork());
+        var handler = new UpdateEventTimeRangeHandler(new FakeVeaEventRepository(db), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);
@@ -35,7 +38,7 @@ public class UpdateEventTimeRangeHandlerTests
         var end = new DateTime(2030, 8, 25, 15, 0, 0, DateTimeKind.Utc);
         var command = Assert.IsType<Success<UpdateEventTimeRangeCommand>>(
             UpdateEventTimeRangeCommand.Create(EventId.New().ToString(), start, end)).Value;
-        var handler = new UpdateEventTimeRangeHandler(new FakeVeaEventRepository(null), new FakeUnitOfWork());
+        var handler = new UpdateEventTimeRangeHandler(new FakeVeaEventRepository(new FakeDbContext()), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);

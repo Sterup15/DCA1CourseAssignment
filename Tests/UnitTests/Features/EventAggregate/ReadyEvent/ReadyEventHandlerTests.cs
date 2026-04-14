@@ -23,9 +23,12 @@ public class ReadyEventHandlerTests
                 new DateTime(2030, 8, 25, 15, 0, 0, DateTimeKind.Utc)),
             now);
 
+        var db = new FakeDbContext();
+        db.Events.Add(veaEvent);
+        await db.SaveChangesAsync();
         var command = Assert.IsType<Success<ReadyEventCommand>>(
             ReadyEventCommand.Create(veaEvent.Id.ToString())).Value;
-        var handler = new ReadyEventHandler(new FakeVeaEventRepository(veaEvent), new FakeUnitOfWork());
+        var handler = new ReadyEventHandler(new FakeVeaEventRepository(db), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);
@@ -40,7 +43,7 @@ public class ReadyEventHandlerTests
         // Arrange
         var command = Assert.IsType<Success<ReadyEventCommand>>(
             ReadyEventCommand.Create(EventId.New().ToString())).Value;
-        var handler = new ReadyEventHandler(new FakeVeaEventRepository(null), new FakeUnitOfWork());
+        var handler = new ReadyEventHandler(new FakeVeaEventRepository(new FakeDbContext()), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);

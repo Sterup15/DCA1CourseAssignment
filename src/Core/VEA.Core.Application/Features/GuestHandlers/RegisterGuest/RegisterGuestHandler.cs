@@ -1,6 +1,7 @@
 using VEA.Core.Application.AppEntry;
 using VEA.Core.Application.AppEntry.Commands.GuestCommands;
 using VEA.Core.Domain.Aggregates.GuestAggregate;
+using VEA.Core.Domain.Aggregates.GuestAggregate.IRepository;
 using VEA.Core.Domain.Common;
 using VEA.Core.Tools.OperationResult;
 using VEA.Core.Tools.OperationResult.Result;

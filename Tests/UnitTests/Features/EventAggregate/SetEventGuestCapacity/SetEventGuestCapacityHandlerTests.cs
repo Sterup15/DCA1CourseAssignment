@@ -14,9 +14,12 @@ public class SetEventGuestCapacityHandlerTests
     {
         // Arrange
         var veaEvent = VeaEventTestFactory.CreateEvent();
+        var db = new FakeDbContext();
+        db.Events.Add(veaEvent);
+        await db.SaveChangesAsync();
         var command = Assert.IsType<Success<SetEventGuestCapacityCommand>>(
             SetEventGuestCapacityCommand.Create(veaEvent.Id.ToString(), 25)).Value;
-        var handler = new SetEventGuestCapacityHandler(new FakeVeaEventRepository(veaEvent), new FakeUnitOfWork());
+        var handler = new SetEventGuestCapacityHandler(new FakeVeaEventRepository(db), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);
@@ -31,7 +34,7 @@ public class SetEventGuestCapacityHandlerTests
         // Arrange
         var command = Assert.IsType<Success<SetEventGuestCapacityCommand>>(
             SetEventGuestCapacityCommand.Create(EventId.New().ToString(), 25)).Value;
-        var handler = new SetEventGuestCapacityHandler(new FakeVeaEventRepository(null), new FakeUnitOfWork());
+        var handler = new SetEventGuestCapacityHandler(new FakeVeaEventRepository(new FakeDbContext()), new FakeUnitOfWork());
 
         // Act
         var result = await handler.HandleAsync(command);

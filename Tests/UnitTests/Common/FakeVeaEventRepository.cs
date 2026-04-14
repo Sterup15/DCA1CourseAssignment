@@ -1,19 +1,12 @@
 using VEA.Core.Domain.Aggregates.VeaEventAggregate;
+using VEA.Core.Domain.Aggregates.VeaEventAggregate.IRepository;
+using VEA.Core.Tools.OperationResult.Errors;
+using VEA.Infrastructure.EfcPersistence.Common;
 
 namespace UnitTests.Common;
 
-internal class FakeVeaEventRepository : IVeaEventRepository
+internal class FakeVeaEventRepository(FakeDbContext db)
+    : RepositoryBase<VeaEvent, EventId>(db), IVeaEventRepository
 {
-    private readonly VeaEvent? _event;
-    public VeaEvent? Added { get; private set; }
-
-    public FakeVeaEventRepository(VeaEvent? @event = null) => _event = @event;
-
-    public Task AddAsync(VeaEvent veaEvent)
-    {
-        Added = veaEvent;
-        return Task.CompletedTask;
-    }
-
-    public Task<VeaEvent?> GetByIdAsync(EventId id) => Task.FromResult(_event);
+    protected override ResultError NotFoundError => EventErrors.VeaEvent.EventNotFound;
 }
