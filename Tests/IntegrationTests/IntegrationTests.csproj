@@ -23,6 +23,7 @@
         <ProjectReference Include="..\..\src\Core\VEA.Core.Domain\VEA.Core.Domain.csproj" />
         <ProjectReference Include="..\..\src\Core\VEA.Core.Application\VEA.Core.Application.csproj" />
         <ProjectReference Include="..\..\src\Infrastructure\VEA.Infrastructure.EfcPersistence\VEA.Infrastructure.EfcPersistence.csproj" />
+        <ProjectReference Include="..\..\src\VEA.Infrastructure.EfcQueries\VEA.Infrastructure.EfcQueries\VEA.Infrastructure.EfcQueries.csproj" />
     </ItemGroup>
 
 </Project>
