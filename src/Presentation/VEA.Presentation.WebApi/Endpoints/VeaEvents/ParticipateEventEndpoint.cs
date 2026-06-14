@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using VEA.Core.Application.AppEntry;
 using VEA.Core.Application.AppEntry.Commands.VeaEventCommands;
+using VEA.Core.Application.AppEntry.Dispatcher;
 using VEA.Core.Tools.OperationResult.Result;
 using VEA.Presentation.WebApi.Endpoints.Common;
 
@@ -9,7 +9,7 @@ namespace VEA.Presentation.WebApi.Endpoints.VeaEvents;
 public record ParticipateEventRequest(string GuestId, string? JoinReason);
 
 [Route("api/events/{eventId}/participations")]
-public class ParticipateEventEndpoint(ICommandHandler<ParticipateEventAsGuestCommand, None> handler)
+public class ParticipateEventEndpoint(ICommandDispatcher dispatcher)
     : ApiEndpoint.WithRequest<ParticipateEventRequest>
 {
     [HttpPost]
@@ -23,7 +23,7 @@ public class ParticipateEventEndpoint(ICommandHandler<ParticipateEventAsGuestCom
             return BadRequest(cmdFailure.Errors.Select(e => e.Message));
 
         var cmd = ((Success<ParticipateEventAsGuestCommand>)cmdResult).Value;
-        var result = await handler.HandleAsync(cmd);
+        var result = await dispatcher.DispatchAsync<ParticipateEventAsGuestCommand, None>(cmd);
 
         return result switch
         {

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using VEA.Core.Application.AppEntry;
 using VEA.Core.Application.AppEntry.Commands.VeaEventCommands;
+using VEA.Core.Application.AppEntry.Dispatcher;
 using VEA.Core.Tools.OperationResult.Result;
 using VEA.Presentation.WebApi.Endpoints.Common;
 
@@ -9,7 +9,7 @@ namespace VEA.Presentation.WebApi.Endpoints.VeaEvents;
 public record UpdateEventTitleRequest(string Title);
 
 [Route("api/events/{eventId}/title")]
-public class UpdateEventTitleEndpoint(ICommandHandler<UpdateEventTitleCommand, None> handler)
+public class UpdateEventTitleEndpoint(ICommandDispatcher dispatcher)
     : ApiEndpoint.WithRequest<UpdateEventTitleRequest>
 {
     [HttpPut]
@@ -23,7 +23,7 @@ public class UpdateEventTitleEndpoint(ICommandHandler<UpdateEventTitleCommand, N
             return BadRequest(cmdFailure.Errors.Select(e => e.Message));
 
         var cmd = ((Success<UpdateEventTitleCommand>)cmdResult).Value;
-        var result = await handler.HandleAsync(cmd);
+        var result = await dispatcher.DispatchAsync<UpdateEventTitleCommand, None>(cmd);
 
         return result switch
         {

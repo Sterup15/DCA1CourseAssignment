@@ -1,21 +1,13 @@
-﻿using VEA.Core.Tools.OperationResult.Result;
 using Microsoft.Extensions.DependencyInjection;
-using VEA.Core.Application.AppEntry.Exceptions;
+using VEA.Core.Tools.OperationResult.Result;
 
 namespace VEA.Core.Application.AppEntry.Dispatcher;
 
-public class Dispatcher(IServiceProvider serviceProvider) : ICommandDispatcher //Integrated constructor? 
+public class Dispatcher(IServiceProvider serviceProvider) : ICommandDispatcher
 {
-    public Task<Result<Result>> DispatchAsync<TCommand>(TCommand command)
+    public Task<Result<TResult>> DispatchAsync<TCommand, TResult>(TCommand command)
     {
-        Type serviceType = typeof(ICommandHandler<TCommand, Result>);
-        var service = serviceProvider.GetService(serviceType);
-        if (service == null)
-        {
-            throw new ServiceNotFoundException(nameof(ICommandHandler<TCommand, Result>));
-        }
-
-        ICommandHandler<TCommand, Result> handler = (ICommandHandler<TCommand, Result>)service; //Nasty parsing syntax, where's the space?
+        var handler = serviceProvider.GetRequiredService<ICommandHandler<TCommand, TResult>>();
         return handler.HandleAsync(command);
     }
 }

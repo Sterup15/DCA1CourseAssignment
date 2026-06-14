@@ -5,11 +5,11 @@ namespace VEA.Core.Application.AppEntry.Dispatcher;
 
 public class UnitOfWorkDispatcher(ICommandDispatcher inner, IUnitOfWork unitOfWork) : ICommandDispatcher
 {
-    public async Task<Result<Result>> DispatchAsync<TCommand>(TCommand command)
+    public async Task<Result<TResult>> DispatchAsync<TCommand, TResult>(TCommand command)
     {
-        var result = await inner.DispatchAsync(command);
+        var result = await inner.DispatchAsync<TCommand, TResult>(command);
 
-        if (result is Success<Result>)
+        if (result is Success<TResult>)
             await unitOfWork.SaveChangesAsync();
 
         return result;
