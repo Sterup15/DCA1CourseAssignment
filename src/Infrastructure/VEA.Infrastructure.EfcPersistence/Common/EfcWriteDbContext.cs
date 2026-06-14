@@ -4,7 +4,7 @@ using VEA.Core.Domain.Aggregates.VeaEventAggregate;
 
 namespace VEA.Infrastructure.EfcPersistence.Common;
 
-public class EfcWriteDbContext(DbContextOptions options) : DbContext(options)
+public class EfcWriteDbContext(DbContextOptions<EfcWriteDbContext> options) : DbContext(options)
 {
     public DbSet<VeaEvent> Events => Set<VeaEvent>();
     public DbSet<Guest> Guests => Set<Guest>();

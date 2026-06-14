@@ -22,7 +22,21 @@ public static class ApplicationServiceExtensions
             Type serviceType = handlerType.GetInterfaces()
                 .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == openHandlerInterface);
 
-            services.AddScoped(serviceType, handlerType);
+            // Use factory delegate so DI can resolve handlers that have internal constructors
+            var capturedType = handlerType;
+            services.AddScoped(serviceType, sp =>
+            {
+                var ctor = capturedType
+                    .GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                    .OrderByDescending(c => c.GetParameters().Length)
+                    .First();
+
+                var args = ctor.GetParameters()
+                    .Select(p => sp.GetRequiredService(p.ParameterType))
+                    .ToArray();
+
+                return ctor.Invoke(args);
+            });
         }
 
         return services;
