@@ -18,7 +18,7 @@ public record AttendeeSummaryDto(string Id, string FullName, string ProfilePictu
 
 [Route("api/events/{eventId}")]
 public class GetSingleEventEndpoint(IQueryDispatcher dispatcher, IObjectMapper mapper)
-    : ApiEndpoint<GetSingleEventRequest, GetSingleEventResponse>
+    : ApiEndpoint.WithRequest<GetSingleEventRequest>.AndResponse<GetSingleEventResponse>
 {
     [HttpGet]
     public override async Task<ActionResult<GetSingleEventResponse>> HandleAsync(

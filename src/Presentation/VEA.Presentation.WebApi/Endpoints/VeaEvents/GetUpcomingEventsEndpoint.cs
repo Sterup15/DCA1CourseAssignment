@@ -17,7 +17,7 @@ public record EventSummaryDto(
 
 [Route("api/events")]
 public class GetUpcomingEventsEndpoint(IQueryDispatcher dispatcher, IObjectMapper mapper)
-    : ApiEndpoint<GetUpcomingEventsRequest, GetUpcomingEventsResponse>
+    : ApiEndpoint.WithRequest<GetUpcomingEventsRequest>.AndResponse<GetUpcomingEventsResponse>
 {
     [HttpGet]
     public override async Task<ActionResult<GetUpcomingEventsResponse>> HandleAsync(

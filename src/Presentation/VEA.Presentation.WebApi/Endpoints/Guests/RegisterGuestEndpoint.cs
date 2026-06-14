@@ -10,7 +10,7 @@ public record RegisterGuestRequest(string FirstName, string LastName, string Ema
 
 [Route("api/guests")]
 public class RegisterGuestEndpoint(ICommandHandler<RegisterGuestCommand, None> handler)
-    : ApiEndpoint<RegisterGuestRequest>
+    : ApiEndpoint.WithRequest<RegisterGuestRequest>
 {
     [HttpPost]
     public override async Task<IActionResult> HandleAsync(

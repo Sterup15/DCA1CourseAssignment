@@ -10,7 +10,7 @@ public record UpdateEventTitleRequest(string Title);
 
 [Route("api/events/{eventId}/title")]
 public class UpdateEventTitleEndpoint(ICommandHandler<UpdateEventTitleCommand, None> handler)
-    : ApiEndpoint<UpdateEventTitleRequest>
+    : ApiEndpoint.WithRequest<UpdateEventTitleRequest>
 {
     [HttpPut]
     public override async Task<IActionResult> HandleAsync(

@@ -10,7 +10,7 @@ public record ParticipateEventRequest(string GuestId, string? JoinReason);
 
 [Route("api/events/{eventId}/participations")]
 public class ParticipateEventEndpoint(ICommandHandler<ParticipateEventAsGuestCommand, None> handler)
-    : ApiEndpoint<ParticipateEventRequest>
+    : ApiEndpoint.WithRequest<ParticipateEventRequest>
 {
     [HttpPost]
     public override async Task<IActionResult> HandleAsync(

@@ -11,7 +11,7 @@ public record CreateEventResponse(string EventId);
 
 [Route("api/events")]
 public class CreateEventEndpoint(ICommandHandler<CreateEventCommand, DomainEventId> handler)
-    : ApiEndpointNoInput<CreateEventResponse>
+    : ApiEndpoint.WithResponse<CreateEventResponse>
 {
     [HttpPost]
     public override async Task<ActionResult<CreateEventResponse>> HandleAsync(CancellationToken ct = default)
